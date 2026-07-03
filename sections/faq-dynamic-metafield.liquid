@@ -1,0 +1,250 @@
+{% comment %}
+  Dynamic FAQ (metafield-driven, square style, auto-hide + JSON-LD schema)
+{% endcomment %}
+
+{% liquid
+  assign raw_html = ''
+
+  # Prefer collection metafield (Rich text)
+  if section.settings.prefer_collection_metafield and collection
+    if collection.metafields and collection.metafields.custom and collection.metafields.custom.faq != blank
+      assign raw_html = collection.metafields.custom.faq | metafield_tag
+    endif
+  endif
+
+  # Fallback only when prefer_collection_metafield is OFF
+  if raw_html == '' and section.settings.prefer_collection_metafield == false
+    assign raw_html = section.settings.faq_richtext | default: ''
+  endif
+
+  assign qtag = section.settings.question_tag | default: 'h3'
+  assign open_q  = '<'  | append: qtag
+  assign close_q = '</' | append: qtag | append: '>'
+  assign open_Q  = '<'  | append: qtag | upcase
+  assign close_Q = '</' | append: qtag | upcase | append: '>'
+
+  assign normalized = raw_html
+  assign tags_to_norm = 'h2,h3,h4,H2,H3,H4' | split: ','
+%}
+{% for t in tags_to_norm %}
+  {% liquid
+    assign bare_open   = '<'  | append: t | append: '>'
+    assign attr_open   = '<'  | append: t | append: ' '
+    assign bare_close  = '</' | append: t | append: '>'
+    assign to_open_wsp = open_q | append: ' '
+    assign to_open_b   = open_q | append: '>'
+    assign to_close    = close_q
+
+    assign normalized = normalized | replace: attr_open, to_open_wsp
+    assign normalized = normalized | replace: bare_open, to_open_b
+    assign normalized = normalized | replace: bare_close, to_close
+  %}
+{% endfor %}
+{% liquid
+  assign normalized = normalized | replace: open_Q, open_q
+  assign normalized = normalized | replace: close_Q, close_q
+
+  assign parts = normalized | split: open_q
+  assign item_count = parts.size | minus: 1
+%}
+
+{%- if item_count > 0 -%}
+<div class="faq-wrapper" style="max-width: {{ section.settings.max_width | default: 900 }}px; margin: 0 auto; padding: 0 20px;">
+  {% if section.settings.title != blank %}
+    <header class="section-header">
+      <h2 class="section-header__title">{{ section.settings.title | escape }}</h2>
+    </header>
+  {% endif %}
+
+  {% if section.settings.enable_jsonld %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {% for p in parts offset: 1 %}
+          {% assign head_and_rest = p | split: close_q %}
+          {% assign title_html = head_and_rest.first %}
+          {% assign question = title_html | split: '>' | last | strip %}
+          {% assign answer_html = head_and_rest.last | strip %}
+          {
+            "@type": "Question",
+            "name": {{ question | json }},
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": {{ answer_html | strip_html | strip | json }}
+            }
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }
+    </script>
+  {% endif %}
+
+  <div id="faq-{{ section.id }}-list"
+       class="faq-list"
+       data-accordion="{{ section.settings.accordion }}"
+       data-default="{{ section.settings.default_open }}"
+       data-hash-open="{{ section.settings.hash_open }}">
+    {% for p in parts offset: 1 %}
+      {% assign head_and_rest = p | split: close_q %}
+      {% assign title_html = head_and_rest.first %}
+      {% assign question = title_html | split: '>' | last | strip %}
+      {% assign answer_html = head_and_rest.last | strip %}
+      {% assign cid = section.id | append: '-' | append: forloop.index %}
+
+      {% assign is_open = false %}
+      {% if section.settings.default_open == 'all' %}{% assign is_open = true %}{% endif %}
+      {% if section.settings.default_open == 'first' and forloop.first %}{% assign is_open = true %}{% endif %}
+
+      <div class="faq-item{% if is_open %} is-open{% endif %}" id="q-{{ cid }}">
+        <button type="button"
+                class="collapsible-trigger"
+                aria-controls="FAQ-content-{{ cid }}"
+                aria-expanded="{{ is_open }}"
+                {% if section.settings.hash_open %}data-anchor="#q-{{ cid }}"{% endif %}>
+          <span class="faq-item__q h3">{{ question }}</span>
+          {% if section.settings.show_icons %}
+            <span class="faq-icon" aria-hidden="true">
+              <svg class="pm-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path class="h" d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path class="v" d="M12 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+          {% endif %}
+        </button>
+
+        <div id="FAQ-content-{{ cid }}" class="collapsible-content" {% unless is_open %}hidden{% endunless %}>
+          <div class="collapsible-content__inner rte">
+            {{ answer_html }}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    (function(){
+      var root = document.getElementById("faq-{{ section.id }}-list");
+      if(!root) return;
+
+      var accordion = root.getAttribute('data-accordion') === 'true';
+      var hashOpen  = root.getAttribute('data-hash-open') === 'true';
+
+      function setOpen(item, open){
+        var btn = item.querySelector('.collapsible-trigger');
+        var panel = item.querySelector('.collapsible-content');
+        if(!btn || !panel) return;
+        if(open){
+          item.classList.add('is-open');
+          btn.setAttribute('aria-expanded','true');
+          panel.removeAttribute('hidden');
+        }else{
+          item.classList.remove('is-open');
+          btn.setAttribute('aria-expanded','false');
+          panel.setAttribute('hidden','');
+        }
+      }
+
+      root.addEventListener('click', function(e){
+        var btn = e.target.closest('.collapsible-trigger');
+        if(!btn) return;
+        var item = btn.closest('.faq-item');
+        var isOpen = item.classList.contains('is-open');
+
+        if(accordion){
+          root.querySelectorAll('.faq-item.is-open').forEach(function(it){
+            if(it !== item) setOpen(it, false);
+          });
+        }
+        setOpen(item, !isOpen);
+
+        if(hashOpen && !isOpen && btn.dataset.anchor){
+          try { history.replaceState(null,'',btn.dataset.anchor); } catch(e){}
+        }
+      });
+    })();
+  </script>
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Dynamic FAQ (metafield)",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Section heading", "default": "FAQs" },
+    { "type": "checkbox", "id": "prefer_collection_metafield", "label": "Use collection metafield custom.faq when available", "default": true },
+    { "type": "richtext", "id": "faq_richtext", "label": "FAQ rich text (fallback)" },
+    { "type": "select", "id": "question_tag", "label": "Question heading tag", "default": "h3",
+      "options": [ { "value": "h2", "label": "<h2>" }, { "value": "h3", "label": "<h3>" }, { "value": "h4", "label": "<h4>" } ] },
+    { "type": "checkbox", "id": "accordion", "label": "Accordion (only one open at a time)", "default": true },
+    { "type": "select", "id": "default_open", "label": "Default open state", "default": "none",
+      "options": [
+        { "value": "none", "label": "All closed" },
+        { "value": "first", "label": "Open first" },
+        { "value": "all", "label": "Open all" }
+      ]
+    },
+    { "type": "checkbox", "id": "enable_jsonld", "label": "Output FAQPage JSON-LD schema", "default": true },
+    { "type": "checkbox", "id": "show_icons", "label": "Show plus/minus icons", "default": true },
+    { "type": "range", "id": "max_width", "label": "Content max-width (px)", "min": 600, "max": 1400, "step": 20, "default": 900 }
+  ],
+  "presets": [{ "name": "Dynamic FAQ (metafield)" }]
+}
+{% endschema %}
+
+<style>
+  /* Square edges (no rounded corners) */
+  .faq-item,
+  .collapsible-trigger,
+  .collapsible-content,
+  .section-header .section-header__title { border-radius: 0 !important; }
+
+  .faq-item + .faq-item { margin-top: .5rem; }
+
+  .collapsible-trigger {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    padding: 16px 18px;
+    background: rgba(0,0,0,.03);
+    border: 1px solid rgba(0,0,0,.06);
+    transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .collapsible-trigger:hover {
+    background: rgba(0,0,0,.05);
+    border-color: rgba(0,0,0,.12);
+  }
+  .collapsible-trigger:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in oklab, currentColor 25%, #0000);
+  }
+
+  .faq-item__q.h3 {
+    margin: 0;
+    font-size: clamp(1rem, 0.95rem + 0.4vw, 1.25rem);
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  .faq-icon { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; }
+  .pm-icon .v { transform-origin: 50% 50%; transition: transform .18s ease, opacity .18s ease; }
+  .faq-item.is-open .pm-icon .v { transform: scaleY(0); opacity: 0; }
+
+  .collapsible-content {
+    border-left: 2px solid currentColor;
+    margin-left: 12px;
+    padding-left: 14px;
+    margin-top: .5rem;
+    animation: faqFade .25s ease;
+  }
+  @keyframes faqFade {
+    from { opacity: 0; transform: translateY(-2px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .collapsible-content__inner.rte { padding: 4px 2px 8px 0; }
+  .collapsible-content__inner p { margin: 0 0 .6rem; }
+</style>

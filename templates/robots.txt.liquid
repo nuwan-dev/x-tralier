@@ -1,0 +1,52 @@
+# we use Shopify as our ecommerce platform
+{%- comment -%}
+  Caution! Please read https://help.shopify.com/en/manual/promoting-marketing/seo/editing-robots-txt
+  before proceeding to make changes to this file.
+
+  Last updated: 27/06/2026
+{%- endcomment -%}
+
+{% comment %} 
+  1. Output all of Shopify's default robots rules unchanged.
+  This automatically handles the correct Allow/Disallow rules for 
+  Googlebot, Googlebot-image, and AdsBot safely.
+{% endcomment %}
+{% for group in robots.default_groups %}
+  {{- group.user_agent -}}
+
+  {% for rule in group.rules %}
+    {{- rule -}}
+  {% endfor %}
+
+  {%- if group.sitemap != blank -%}
+    {{ group.sitemap }}
+  {%- endif -%}
+{% endfor %}
+
+{% comment %} 
+  2. Global Spam Blocks
+  Appended at the bottom to ensure ALL search engine crawlers (*)
+  are blocked from accessing the injected hacker paths.
+{% endcomment %}
+
+User-agent: *
+Disallow: /collections/all/*dumps*
+Disallow: /collections/all/*cvv*
+Disallow: /collections/all/*paypal*
+Disallow: /collections/all/*hack*
+Disallow: /collections/all/*hacking*
+Disallow: /collections/all/*buy-cc*
+Disallow: /collections/all/*airtel*
+Disallow: /collections/all/*fullz*
+Disallow: /collections/all/*vcc*
+Disallow: /collections/all/*ssn*
+Disallow: /collections/all/*dob*
+Disallow: /collections/all/*carding*
+Disallow: /collections/all/*dumps-with-pin*
+Disallow: /collections/all/*cvv-shop*
+Disallow: /collections/all/*cc-dump*
+Disallow: /collections/all/*buy-cvv*
+Disallow: /collections/all/*free-cc*
+Disallow: /collections/all/*stolen*
+Disallow: /collections/all/*call-history*
+Disallow: /collections/all/*telegram*%40*

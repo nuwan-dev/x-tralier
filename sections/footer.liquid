@@ -1,0 +1,517 @@
+{%- comment -%}
+  X-TRAILERS Footer (New Design) — matches screenshot layout
+  ✅ Uses EXISTING subscribe form snippet: {% render 'homepage-block-newsletter' %}
+  ✅ Keeps payment icons logic
+  ✅ Responsive (4 cols → 2 cols → 1 col)
+  ✅ Scoped CSS by section.id (no theme clashes)
+{%- endcomment -%}
+
+{%- assign uid = section.id | replace: '-', '' | downcase -%}
+
+<footer class="xf-footer-{{ uid }}" role="contentinfo" {{ section.shopify_attributes }}>
+  {% style %}
+    .xf-footer-{{ uid }}{
+      background: {{ section.settings.bg_color }};
+      color: {{ section.settings.text_color }};
+    }
+    .xf-footer-{{ uid }} a{ color: {{ section.settings.link_color }}; text-decoration: none; }
+    .xf-footer-{{ uid }} a:hover{ color: {{ section.settings.link_hover_color }}; }
+
+    .xf-footer-{{ uid }} .xf-container{
+      max-width: {{ section.settings.max_width }}px;
+      margin: 0 auto;
+      padding: {{ section.settings.pad_y }}px {{ section.settings.pad_x }}px;
+      justify-self:center;
+    }
+
+    .xf-footer-{{ uid }} .xf-grid{
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1fr 1.2fr;
+      gap: {{ section.settings.col_gap }}px;
+      align-items: start;
+    }
+
+    .xf-footer-{{ uid }} .xf-logo{
+      display: inline-block;
+      margin-bottom: 26px;
+    }
+    .xf-footer-{{ uid }} .xf-logo img{
+      max-width: {{ section.settings.logo_width }}px;
+      height: auto;
+      display: block;
+    }
+
+    .xf-footer-{{ uid }} .xf-meta{
+      font-size: {{ section.settings.body_size }}px;
+      line-height: 1.8;
+      opacity: 0.95;
+      margin-bottom: 22px;
+      white-space: pre-line;
+    }
+
+    .xf-footer-{{ uid }} .xf-hours{
+      font-size: {{ section.settings.body_size }}px;
+      line-height: 1.8;
+      opacity: 0.95;
+      white-space: pre-line;
+    }
+
+    .xf-footer-{{ uid }} .xf-col-title{
+      font-size: {{ section.settings.title_size }}px;
+      font-weight: 600;
+      color: {{ section.settings.title_color }};
+      margin: 10px 0 18px;
+      letter-spacing: 0.2px;
+    }
+
+    .xf-footer-{{ uid }} .xf-links{
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 14px;
+    }
+    .xf-footer-{{ uid }} .xf-links a{
+      font-size: {{ section.settings.body_size }}px;
+      opacity: 0.95;
+    }
+
+    /* Newsletter */
+    .xf-footer-{{ uid }} .xf-news-title{
+      margin-bottom: 16px;
+      font-size: {{ section.settings.body_size }}px;
+      opacity: 0.95;
+    }
+
+    /* IMPORTANT: keep existing snippet, just style it */
+    .xf-footer-{{ uid }} .footer-newsletter,
+    .xf-footer-{{ uid }} .home-newsletter,
+    .xf-footer-{{ uid }} .newsletter-form,
+    .xf-footer-{{ uid }} form[action*="contact"]{
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .xf-footer-{{ uid }} .footer-newsletter form,
+    .xf-footer-{{ uid }} .home-newsletter form,
+    .xf-footer-{{ uid }} .newsletter-form form{
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      width: 100%;
+      flex-wrap:nowrap;
+    }
+
+    .xf-footer-{{ uid }} input[type="email"],
+    .xf-footer-{{ uid }} input[name="contact[email]"],
+    .xf-footer-{{ uid }} input[type="text"][name*="email"]{
+      flex: 1 1 auto;
+      min-width: 0;
+      height: {{ section.settings.news_height }}px;
+      padding: 0 18px;
+      border-radius: {{ section.settings.news_radius }}px 0 0 {{ section.settings.news_radius }}px;
+      border: 1px solid {{ section.settings.news_border }};
+      background: {{ section.settings.news_bg }};
+      color: {{ section.settings.news_text }};
+      outline: none;
+    }
+    .xf-footer-{{ uid }} input::placeholder{ color: {{ section.settings.news_placeholder }}; }
+
+    .xf-footer-{{ uid }} button,
+    .xf-footer-{{ uid }} .btn,
+    .xf-footer-{{ uid }} input[type="submit"]{
+      height: {{ section.settings.news_height }}px;
+      padding: 0 26px;
+      border-radius: 0 {{ section.settings.news_radius }}px {{ section.settings.news_radius }}px 0;
+      border: 1px solid {{ section.settings.news_button_bg }};
+      background: {{ section.settings.news_button_bg }};
+      color: {{ section.settings.news_button_text }};
+      font-weight: 600;
+      cursor: pointer;
+      transition: filter .15s ease, transform .15s ease;
+      white-space: nowrap;
+    }
+    .xf-footer-{{ uid }} button:hover,
+    .xf-footer-{{ uid }} .btn:hover,
+    .xf-footer-{{ uid }} input[type="submit"]:hover{
+      filter: brightness(0.95);
+    }
+    .xf-footer-{{ uid }} button:active,
+    .xf-footer-{{ uid }} .btn:active,
+    .xf-footer-{{ uid }} input[type="submit"]:active{
+      transform: translateY(1px);
+    }
+
+    /* Social icons (simple outline like screenshot) */
+    .xf-footer-{{ uid }} .xf-social{
+      margin-top: 22px;
+      display: flex;
+      gap: 22px;
+      align-items: center;
+    }
+    .xf-footer-{{ uid }} .xf-social a{
+      width: 42px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      /* border-radius: 10px; */
+      color: {{ section.settings.social_color }};
+      background: transparent;
+      /* border: 1px solid rgba(255,255,255,0.16); */
+      transition: background .15s ease, transform .15s ease, border-color .15s ease;
+    }
+    .xf-footer-{{ uid }} .xf-social a:hover{
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,0.26);
+      background: rgba(255,255,255,0.05);
+    }
+    .xf-footer-{{ uid }} .xf-social svg{
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      display: block;
+    }
+
+    /* Bottom bar */
+    .xf-footer-{{ uid }} .xf-bottom{
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 18px 0 30px;
+      background: {{ section.settings.bottom_bg }};
+    }
+
+    .xf-footer-{{ uid }} .xf-payments{
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px 0 14px;
+      list-style: none;
+      padding: 0;
+    
+          background: #232323;
+    padding: 8px 30px 4px !important;
+
+    }
+    .xf-footer-{{ uid }} .xf-payments img{
+      height: {{ section.settings.payment_icon_h }}px;
+      width: auto;
+      display: block;
+      /* border-radius: 4px;
+      background: #fff;
+      padding: 2px 6px; */
+    }
+
+    .xf-footer-{{ uid }} .xf-copy{
+      text-align: center;
+      font-size: {{ section.settings.copy_size }}px;
+      color: {{ section.settings.copy_color }};
+      opacity: 0.95;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px){
+      .xf-footer-{{ uid }} .xf-grid{
+        grid-template-columns: 1.2fr 1fr 1.2fr;
+        gap: calc({{ section.settings.col_gap }}px * 0.9);
+      }
+      .xf-footer-{{ uid }} .xf-col--info{ display:none; }
+    }
+
+    @media (max-width: 900px){
+      .xf-footer-{{ uid }} .xf-grid{
+        grid-template-columns: 1fr 1fr;
+        gap: calc({{ section.settings.col_gap }}px * 0.85);
+      }
+      .xf-footer-{{ uid }} .xf-col--newsletter{ grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 600px){
+      .xf-footer-{{ uid }} .xf-container{
+        padding: calc({{ section.settings.pad_y }}px * 0.8) calc({{ section.settings.pad_x }}px * 0.8);
+      }
+      .xf-footer-{{ uid }} .xf-grid{
+        grid-template-columns: 1fr;
+      }
+      .xf-footer-{{ uid }} input[type="email"],
+      .xf-footer-{{ uid }} input[name="contact[email]"],
+      .xf-footer-{{ uid }} input[type="text"][name*="email"]{
+        border-radius: {{ section.settings.news_radius }}px;
+      }
+      .xf-footer-{{ uid }} button,
+      .xf-footer-{{ uid }} .btn,
+      .xf-footer-{{ uid }} input[type="submit"]{
+        border-radius: {{ section.settings.news_radius }}px;
+        width: 100%;
+      }
+      .xf-footer-{{ uid }} .footer-newsletter form,
+      .xf-footer-{{ uid }} .home-newsletter form,
+      .xf-footer-{{ uid }} .newsletter-form form{
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  {% endstyle %}
+
+  <div class="xf-container">
+    <div class="xf-grid">
+      <!-- LEFT: Logo + contact + hours -->
+      <div class="xf-col xf-col--brand">
+        {%- if section.settings.logo != blank -%}
+          <a class="xf-logo" href="{{ routes.root_url }}">
+            <img
+              src="{{ section.settings.logo | image_url: width: 500 }}"
+              alt="{{ shop.name | escape }}"
+              loading="lazy">
+          </a>
+        {%- endif -%}
+
+        {%- if section.settings.contact_text != blank -%}
+          <div class="xf-meta">{{ section.settings.contact_text }}</div>
+        {%- endif -%}
+
+        {%- if section.settings.hours_text != blank -%}
+          <div class="xf-hours">{{ section.settings.hours_text }}</div>
+        {%- endif -%}
+      </div>
+
+      <!-- SHOP links -->
+      <div class="xf-col xf-col--shop">
+        <div class="xf-col-title">{{ section.settings.shop_title }}</div>
+        {%- if section.settings.shop_menu != blank and linklists[section.settings.shop_menu].links.size > 0 -%}
+          <ul class="xf-links">
+            {%- for link in linklists[section.settings.shop_menu].links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      <!-- INFORMATION links -->
+      <div class="xf-col xf-col--info">
+        <div class="xf-col-title">{{ section.settings.info_title }}</div>
+        {%- if section.settings.info_menu != blank and linklists[section.settings.info_menu].links.size > 0 -%}
+          <ul class="xf-links">
+            {%- for link in linklists[section.settings.info_menu].links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      <!-- NEWSLETTER -->
+      <div class="xf-col xf-col--newsletter">
+        <div class="xf-col-title">{{ section.settings.news_title }}</div>
+        {%- if section.settings.news_subtitle != blank -%}
+          <div class="xf-news-title">{{ section.settings.news_subtitle }}</div>
+        {%- endif -%}
+
+        <!-- Use EXISTING subscribe form -->
+        <div class="footer-newsletter">
+          {% render 'homepage-block-newsletter' %}
+        </div>
+
+        {%- if section.settings.show_social -%}
+          <div class="xf-social" aria-label="Social links">
+            {%- if section.settings.facebook_url != blank -%}
+              <a href="{{ section.settings.facebook_url }}" target="_blank" rel="noopener" aria-label="Facebook">
+                <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/fb.svg?v=1770625698" 
+     alt="Facebook" 
+     width="24" height="24">
+              </a>
+            {%- endif -%}
+            {%- if section.settings.instagram_url != blank -%}
+              <a href="{{ section.settings.instagram_url }}" target="_blank" rel="noopener" aria-label="Instagram">
+                <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/ig.svg?v=1770625699" 
+     alt="Facebook" 
+     width="24" height="24">
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom payment + copyright -->
+  <div class="xf-bottom">
+    <div class="xf-container">
+      {%- if section.settings.show_payment_icons -%}
+        {% assign payment_string = 'visa,visa_electron,master,maestro,american_express,solo,amazon_payments,apple_pay,bitcoin,cirrus,dankort,diners_club,discover,paypal,dogecoin,dwolla,forbrugsforeningen,interac,jcb,litecoin,stripe,sage,wallet,western' %}
+        {% assign methods = payment_string | split: ',' %}
+
+        <ul class="xf-payments">
+          {%- for method in methods -%}
+            {%- assign display_current_method = method | prepend: 'payment_display_' -%}
+            {%- if section.settings[display_current_method] -%}
+              {%- assign current_method_icon = method | prepend: 'icon_' -%}
+              {%- if section.settings[current_method_icon] != blank -%}
+                <li>
+                  <img
+                    src="{{ section.settings[current_method_icon] | image_url: width: 120 }}"
+                    alt="{{ method | escape }}"
+                    loading="lazy">
+                </li>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      <div class="xf-copy">
+        {{ section.settings.copyright_text }}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer – X-Trailers (New)",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "label": "Max width (px)", "min": 900, "max": 2000, "step": 50, "default": 1600 },
+    { "type": "range", "id": "pad_y", "label": "Top padding (px)", "min": 20, "max": 120, "step": 2, "default": 70 },
+    { "type": "range", "id": "pad_x", "label": "Side padding (px)", "min": 10, "max": 60, "step": 2, "default": 26 },
+    { "type": "range", "id": "col_gap", "label": "Column gap (px)", "min": 16, "max": 90, "step": 2, "default": 70 },
+
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "bg_color", "label": "Footer background", "default": "#000000" },
+    { "type": "color", "id": "bottom_bg", "label": "Bottom bar background", "default": "#0b0b0b" },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#ffffff" },
+    { "type": "color", "id": "title_color", "label": "Headings color", "default": "#ffffff" },
+    { "type": "color", "id": "link_color", "label": "Links color", "default": "#ffffff" },
+    { "type": "color", "id": "link_hover_color", "label": "Links hover color", "default": "#f4a321" },
+
+    { "type": "header", "content": "Logo" },
+    { "type": "image_picker", "id": "logo", "label": "Footer logo" },
+    { "type": "range", "id": "logo_width", "label": "Logo width (px)", "min": 80, "max": 260, "step": 2, "default": 170 },
+
+    { "type": "header", "content": "Left column text" },
+    {
+      "type": "textarea",
+      "id": "contact_text",
+      "label": "Contact text (supports line breaks)",
+      "default": "Showroom :     6C Rennie Dr, Mangere, Auckland\n(09) 913 1487\nxtrailernz@gmail.com"
+    },
+    {
+      "type": "textarea",
+      "id": "hours_text",
+      "label": "Opening hours (supports line breaks)",
+      "default": "Opening Hours :    Mon – Fri 10.00 am – 4 pm\nSat 9.00 am – 1 pm"
+    },
+    { "type": "range", "id": "title_size", "label": "Column title size (px)", "min": 14, "max": 26, "step": 1, "default": 20 },
+    { "type": "range", "id": "body_size", "label": "Body size (px)", "min": 12, "max": 20, "step": 1, "default": 16 },
+
+    { "type": "header", "content": "Menus" },
+    { "type": "text", "id": "shop_title", "label": "Shop title", "default": "Shop" },
+    { "type": "link_list", "id": "shop_menu", "label": "Shop menu" },
+    { "type": "text", "id": "info_title", "label": "Information title", "default": "Information" },
+    { "type": "link_list", "id": "info_menu", "label": "Information menu" },
+
+    { "type": "header", "content": "Newsletter (uses your existing form)" },
+    { "type": "text", "id": "news_title", "label": "Newsletter title", "default": "Stay Connected" },
+    { "type": "text", "id": "news_subtitle", "label": "Newsletter subtitle", "default": "Sign Up for our News Letters" },
+    { "type": "color", "id": "news_bg", "label": "Input background", "default": "#ffffff" },
+    { "type": "color", "id": "news_text", "label": "Input text", "default": "#111111" },
+    { "type": "color", "id": "news_placeholder", "label": "Placeholder text", "default": "#7b7b7b" },
+    { "type": "color", "id": "news_border", "label": "Input border", "default": "#ffffff" },
+    { "type": "color", "id": "news_button_bg", "label": "Button background", "default": "#f4a321" },
+    { "type": "color", "id": "news_button_text", "label": "Button text", "default": "#111111" },
+    { "type": "range", "id": "news_height", "label": "Input height (px)", "min": 36, "max": 64, "step": 2, "default": 44 },
+    { "type": "range", "id": "news_radius", "label": "Input radius (px)", "min": 0, "max": 30, "step": 1, "default": 8 },
+
+    { "type": "header", "content": "Social" },
+    { "type": "checkbox", "id": "show_social", "label": "Show social icons", "default": true },
+    { "type": "color", "id": "social_color", "label": "Social icon color", "default": "#ffffff" },
+    { "type": "url", "id": "facebook_url", "label": "Facebook URL" },
+    { "type": "url", "id": "instagram_url", "label": "Instagram URL" },
+
+    { "type": "header", "content": "Bottom (payments + copyright)" },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "Show payment icons", "default": true },
+    { "type": "range", "id": "payment_icon_h", "label": "Payment icon height (px)", "min": 18, "max": 40, "step": 1, "default": 26 },
+    { "type": "text", "id": "copyright_text", "label": "Copyright text", "default": "© 2025 X-TRAILERS. All Rights Reserved." },
+    { "type": "range", "id": "copy_size", "label": "Copyright size (px)", "min": 12, "max": 18, "step": 1, "default": 14 },
+    { "type": "color", "id": "copy_color", "label": "Copyright color", "default": "#ffffff" },
+
+    { "type": "header", "content": "Payment icon toggles" },
+
+    { "type": "checkbox", "id": "payment_display_visa", "label": "Visa", "default": true },
+    { "type": "image_picker", "id": "icon_visa", "label": "Visa image" },
+
+    { "type": "checkbox", "id": "payment_display_master", "label": "Master", "default": true },
+    { "type": "image_picker", "id": "icon_master", "label": "Master image" },
+
+    { "type": "checkbox", "id": "payment_display_paypal", "label": "Paypal", "default": true },
+    { "type": "image_picker", "id": "icon_paypal", "label": "Paypal image" },
+
+    { "type": "checkbox", "id": "payment_display_apple_pay", "label": "Apple Pay", "default": true },
+    { "type": "image_picker", "id": "icon_apple_pay", "label": "Apple Pay image" },
+
+    { "type": "checkbox", "id": "payment_display_amazon_payments", "label": "Amazon Payments" },
+    { "type": "image_picker", "id": "icon_amazon_payments", "label": "Amazon Payments image" },
+
+    { "type": "checkbox", "id": "payment_display_visa_electron", "label": "Visa Electron" },
+    { "type": "image_picker", "id": "icon_visa_electron", "label": "Visa Electron image" },
+
+    { "type": "checkbox", "id": "payment_display_american_express", "label": "American Express" },
+    { "type": "image_picker", "id": "icon_american_express", "label": "American Express image" },
+
+    { "type": "checkbox", "id": "payment_display_maestro", "label": "Maestro" },
+    { "type": "image_picker", "id": "icon_maestro", "label": "Maestro image" },
+
+    { "type": "checkbox", "id": "payment_display_solo", "label": "Solo" },
+    { "type": "image_picker", "id": "icon_solo", "label": "Solo image" },
+
+    { "type": "checkbox", "id": "payment_display_bitcoin", "label": "Bitcoin" },
+    { "type": "image_picker", "id": "icon_bitcoin", "label": "Bitcoin image" },
+
+    { "type": "checkbox", "id": "payment_display_cirrus", "label": "Cirrus" },
+    { "type": "image_picker", "id": "icon_cirrus", "label": "Cirrus image" },
+
+    { "type": "checkbox", "id": "payment_display_dankort", "label": "Dankort" },
+    { "type": "image_picker", "id": "icon_dankort", "label": "Dankort image" },
+
+    { "type": "checkbox", "id": "payment_display_diners_club", "label": "Diners Club" },
+    { "type": "image_picker", "id": "icon_diners_club", "label": "Diners Club image" },
+
+    { "type": "checkbox", "id": "payment_display_discover", "label": "Discover" },
+    { "type": "image_picker", "id": "icon_discover", "label": "Discover image" },
+
+    { "type": "checkbox", "id": "payment_display_dogecoin", "label": "Dogecoin" },
+    { "type": "image_picker", "id": "icon_dogecoin", "label": "Dogecoin image" },
+
+    { "type": "checkbox", "id": "payment_display_dwolla", "label": "Dwolla" },
+    { "type": "image_picker", "id": "icon_dwolla", "label": "Dwolla image" },
+
+    { "type": "checkbox", "id": "payment_display_forbrugsforeningen", "label": "Forbrugsforeningen" },
+    { "type": "image_picker", "id": "icon_forbrugsforeningen", "label": "Forbrugsforeningen image" },
+
+    { "type": "checkbox", "id": "payment_display_interac", "label": "Interac" },
+    { "type": "image_picker", "id": "icon_interac", "label": "Interac image" },
+
+    { "type": "checkbox", "id": "payment_display_jcb", "label": "JCB" },
+    { "type": "image_picker", "id": "icon_jcb", "label": "JCB image" },
+
+    { "type": "checkbox", "id": "payment_display_litecoin", "label": "Litecoin" },
+    { "type": "image_picker", "id": "icon_litecoin", "label": "Litecoin image" },
+
+    { "type": "checkbox", "id": "payment_display_stripe", "label": "Stripe" },
+    { "type": "image_picker", "id": "icon_stripe", "label": "Stripe image" },
+
+    { "type": "checkbox", "id": "payment_display_sage", "label": "Sage" },
+    { "type": "image_picker", "id": "icon_sage", "label": "Sage image" },
+
+    { "type": "checkbox", "id": "payment_display_wallet", "label": "Google Wallet" },
+    { "type": "image_picker", "id": "icon_wallet", "label": "Google Wallet image" },
+
+    { "type": "checkbox", "id": "payment_display_western", "label": "Western Union" },
+    { "type": "image_picker", "id": "icon_western", "label": "Western Union image" }
+  ],
+  "presets": [
+    { "name": "Footer – X-Trailers (New)" }
+  ]
+}
+{% endschema %}

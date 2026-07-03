@@ -1,0 +1,192 @@
+{% comment %}
+  Breadcrumbs that work with product-only URLs.
+  Server-side collection resolution priority (fallback):
+  1) current `collection` (if URL had it)
+  2) product metafield `custom.primary_collection` (Collection reference)
+  3) preferred handles (single-axles > tandem-axles > domestic-trailers)
+  4) product.collections.first
+
+  Client-side enhancement:
+  - On collection pages, we store the collection handle/title in sessionStorage.
+  - On product pages, if the stored collection actually contains the product,
+    we rewrite the middle breadcrumb to that collection (e.g., food-trailers).
+{% endcomment %}
+
+{% unless template == 'index' %}
+<div class="breadcrumb {% if settings.layout_style == 'layout_style_1170' or settings.layout_style == 'layout_style_flower' or settings.layout_style == 'layout_style_suppermarket' %}layout-breadcrumb--skin1{% endif %}">
+  {% if settings.display_breadcrumb %}
+
+  <!-- Home -->
+  <a href="{{ routes.root_url }}" data-translate="general.breadcrumbs.home">{{ 'general.breadcrumbs.home' | t }}</a>
+
+  {%- comment -%} Server-side: pick a collection (fallback) {%- endcomment -%}
+  {%- assign bc_collection = nil -%}
+  {%- if collection -%}
+    {%- assign bc_collection = collection -%}
+  {%- elsif product and product.metafields.custom.primary_collection -%}
+    {%- assign bc_collection = product.metafields.custom.primary_collection -%}
+  {%- elsif product and product.collections.size > 0 -%}
+    {%- assign preferred_handles = 'single-axles|tandem-axles|domestic-trailers' | split: '|' -%}
+    {%- assign matched = nil -%}
+    {%- for ph in preferred_handles -%}
+      {%- for pc in product.collections -%}
+        {%- if pc.handle == ph -%}
+          {%- assign matched = pc -%}{%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if matched -%}{%- break -%}{%- endif -%}
+    {%- endfor -%}
+    {%- if matched -%}
+      {%- assign bc_collection = matched -%}
+    {%- else -%}
+      {%- assign bc_collection = product.collections.first -%}
+    {%- endif -%}
+  {%- endif -%}
+
+  {% if template contains 'product' %}
+
+    {%- if bc_collection -%}
+      <span class="arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+
+      {%- capture url -%}{{ bc_collection.url }}{%- endcapture -%}
+      <span class="bd-title" id="bc-collection">
+        {% if settings.enable_multilang %}
+          <span class="lang1"><a href="{{ url }}" data-bc-handle="{{ bc_collection.handle }}">{{ bc_collection.title | split: '|' | first }}</a></span>
+          <span class="lang2"><a href="{{ url }}" data-bc-handle-dup="{{ bc_collection.handle }}">{{ bc_collection.title | split: '|' | last  }}</a></span>
+        {% else %}
+          <span><a href="{{ url }}" data-bc-handle="{{ bc_collection.handle }}">{{ bc_collection.title | split: '|' | first }}</a></span>
+        {% endif %}
+      </span>
+    {%- else -%}
+      {%- comment -%} reserve a mount point so JS can insert collection if needed {%- endcomment -%}
+      <span class="arrow" style="display:none" id="bc-insert-arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+      <span class="bd-title" id="bc-collection" style="display:none"></span>
+    {%- endif -%}
+
+    <span class="arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+    {% if settings.enable_multilang %}
+      <span class="lang1">{{ product.title | split: '|' | first }}</span>
+      <span class="lang2">{{ product.title | split: '|' | last  }}</span>
+    {% else %}
+      <span>{{ product.title | split: '|' | first }}</span>
+    {% endif %}
+
+  {% elsif template contains 'collection' and collection.handle %}
+    <span class="arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+
+    {% capture url %}{{ collection.url }}{% endcapture %}
+    <span class="bd-title">
+      {% if settings.enable_multilang %}
+        <span class="lang1">{{ collection.title | split: '|' | first | link_to: url }}</span>
+        <span class="lang2">{{ collection.title | split: '|' | last  | link_to: url }}</span>
+      {% else %}
+        <span>{{ collection.title | split: '|' | first | link_to: url }}</span>
+      {% endif %}
+    </span>
+
+    {% if current_tags %}
+      <span class="arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+      {% assign bd_tags = current_tags | join: " + " %}
+      {% if settings.enable_multilang %}
+        <span class="lang1">{{ bd_tags | split: '|' | first }}</span>
+        <span class="lang2">{{ bd_tags | split: '|' | last  }}</span>
+      {% else %}
+        <span>{{ bd_tags | split: '|' | first }}</span>
+      {% endif %}
+    {% endif %}
+
+  {% elsif template == 'cart' %}
+    <span class="arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+    <span {% if settings.enable_multilang %}data-translate="general.breadcrumbs.cart"{% endif %}>{{ 'general.breadcrumbs.cart' | t }}</span>
+
+  {% elsif template == 'article' %}
+    <span class="arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+    {% if settings.enable_multilang %}
+      <span class="lang1">{{ blog.title | split: '|' | first | link_to: blog.url }}</span>
+      <span class="lang2">{{ blog.title | split: '|' | last  | link_to: blog.url }}</span>
+    {% else %}
+      <span>{{ blog.title | split: '|' | first | link_to: blog.url }}</span>
+    {% endif %}
+
+    <span class="arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+    {% if settings.enable_multilang %}
+      <span class="lang1">{{ article.title | split: '|' | first }}</span>
+      <span class="lang2">{{ article.title | split: '|' | last  }}</span>
+    {% else %}
+      <span>{{ article.title | split: '|' | first }}</span>
+    {% endif %}
+
+  {% elsif template contains 'page' %}
+    <span class="arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+    {% if settings.enable_multilang %}
+      <span class="lang1">{{ page.title | split: '|' | first }}</span>
+      <span class="lang2">{{ page.title | split: '|' | last  }}</span>
+    {% else %}
+      <span>{{ page.title | split: '|' | first }}</span>
+    {% endif %}
+
+  {% else %}
+    <span class="arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+    {% if settings.enable_multilang %}
+      <span class="lang1">{{ page_title | split: '|' | first }}</span>
+      <span class="lang2">{{ page_title | split: '|' | last  }}</span>
+    {% else %}
+      <span>{{ page_title | split: '|' | first }}</span>
+    {% endif %}
+  {% endif %}
+  {% endif %}
+</div>
+{% endunless %}
+
+<!-- Client-side: preserve the last visited collection across product-only links -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // 1) Rename home text
+  var homeCrumb = document.querySelector('.breadcrumb a[data-translate="general.breadcrumbs.home"]');
+  if (homeCrumb) homeCrumb.textContent = "Best NZ Trailers";
+
+  // 2) If we're on a collection page, remember it
+  {% if template contains 'collection' and collection.handle %}
+    try {
+      sessionStorage.setItem('bc_collection_handle', '{{ collection.handle | escape }}');
+      sessionStorage.setItem('bc_collection_title', '{{ collection.title  | strip | escape }}');
+      sessionStorage.setItem('bc_collection_url', '{{ collection.url }}');
+    } catch (e) {}
+  {% endif %}
+
+  // 3) If we're on a product page, and the stored collection contains this product, show that collection in the breadcrumb
+  {% if template contains 'product' %}
+    try {
+      var storedHandle = sessionStorage.getItem('bc_collection_handle');
+      var storedTitle  = sessionStorage.getItem('bc_collection_title');
+      var storedUrl    = sessionStorage.getItem('bc_collection_url');
+
+      // The product's collections (handles) embedded server-side so we can validate membership
+      var productCollections = {{ product.collections | map: 'handle' | json }};
+
+      if (storedHandle && productCollections.indexOf(storedHandle) !== -1) {
+        // We have a valid originating collection → rewrite middle crumb
+        var bcWrap   = document.getElementById('bc-collection');
+        var arrowEl  = document.getElementById('bc-insert-arrow');
+
+        // Ensure arrow/slot are visible if they were placeholders
+        if (arrowEl) arrowEl.style.display = '';
+        if (bcWrap)  {
+          bcWrap.style.display = '';
+
+          // Build inner HTML respecting your lang spans if present in DOM
+          var hasLang = !!bcWrap.querySelector('.lang1') || !!bcWrap.querySelector('.lang2');
+
+          if (hasLang) {
+            bcWrap.innerHTML =
+              '<span class="lang1"><a href="'+ storedUrl +'" data-bc-handle="'+ storedHandle +'">'+ storedTitle +'</a></span>' +
+              '<span class="lang2"><a href="'+ storedUrl +'" data-bc-handle-dup="'+ storedHandle +'">'+ storedTitle +'</a></span>';
+          } else {
+            bcWrap.innerHTML = '<span><a href="'+ storedUrl +'" data-bc-handle="'+ storedHandle +'">'+ storedTitle +'</a></span>';
+          }
+        }
+      }
+    } catch (e) { /* noop */ }
+  {% endif %}
+});
+</script>

@@ -1,0 +1,634 @@
+{% comment %}
+  Product Carousel – Optimized (full item clickable)
+  - Whole card is a link
+  - Scoped CSS (no global h2)
+  - Unique Essential Preorder hiding scoped to this section
+  - Safer JS init (runs on Shopify theme editor + normal load)
+  - No hard-coded theme-specific class names
+{% endcomment %}
+
+{%- assign uid = section.id | replace: '-', '' | downcase -%}
+
+{% style %}
+/* ===== Scope everything to this section only ===== */
+.pc-{{ uid }} {
+  padding: 40px 20px;
+  background-color: {{ section.settings.background_color }};
+  position: relative;
+}
+
+/* Optional: hide Essential Preorder price blocks ONLY inside this section */
+.pc-{{ uid }} [data-essential-preorder-element="prices-block"],
+.pc-{{ uid }} [data-essential-preorder-element="prices-container"],
+.pc-{{ uid }} [data-essential-preorder-element="regular"],
+.pc-{{ uid }} [data-essential-preorder-element="compare-at"] {
+  display: none !important;
+}
+
+.pc-{{ uid }}--full {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  max-width: none;
+}
+
+.pc-{{ uid }}--boxed {
+  max-width: {{ section.settings.boxed_max_width }}px;
+  margin: 0 auto;
+}
+
+/* Heading */
+.pc-heading-{{ uid }} {
+  text-align: center;
+  margin: 0 0 40px;
+  font-size: {{ section.settings.heading_size }}px;
+  color: {{ section.settings.heading_color }};
+  font-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+  font-weight: {{ section.settings.heading_font.weight }};
+  line-height: 1.15;
+}
+
+/* Track wrapper */
+.pc-container-{{ uid }} {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Track */
+.pc-track-{{ uid }} {
+  display: flex;
+  --gap-desktop: 20px;
+  --gap-mobile: 10px;
+  gap: var(--gap-desktop);
+  transition: transform 0.5s ease;
+  will-change: transform;
+}
+
+@media (max-width: 749px) {
+  .pc-track-{{ uid }} { gap: var(--gap-mobile); }
+}
+
+/* Items */
+.pc-item-{{ uid }} {
+  flex: 0 0 calc((100% - (var(--gap-desktop) * ({{ section.settings.products_per_row }} - 1))) / {{ section.settings.products_per_row }});
+  min-width: 0;
+}
+
+@media (max-width: 989px) {
+  .pc-item-{{ uid }} {
+    flex: 0 0 calc((100% - var(--gap-desktop)) / 2);
+  }
+}
+
+@media (max-width: 749px) {
+  .pc-item-{{ uid }} {
+    flex: 0 0 calc((100% - (var(--gap-mobile) * ({{ section.settings.products_per_row_mobile }} - 1))) / {{ section.settings.products_per_row_mobile }});
+  }
+}
+
+/* FULL CARD CLICKABLE LINK */
+.pc-link-{{ uid }} {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pc-card-{{ uid }} {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Media */
+.pc-media-{{ uid }} {
+  position: relative;
+  width: 100%;
+  padding-bottom: {{ section.settings.image_aspect | times: 100 }}%;
+  overflow: hidden;
+  background-color: #f4f4f4;
+  margin-bottom: 12px;
+  border-radius: {{ section.settings.image_radius }}px;
+}
+
+.pc-img-{{ uid }} {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: {{ section.settings.image_radius }}px;
+}
+
+/* Badge */
+.pc-badge-{{ uid }} {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: {{ section.settings.badge_size }}px;
+  height: {{ section.settings.badge_size }}px;
+  border-radius: 50%;
+  background-color: {{ section.settings.badge_background_color }};
+  color: {{ section.settings.badge_text_color }};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: {{ section.settings.badge_text_size }}px;
+  font-weight: 600;
+  z-index: 2;
+}
+
+/* Title */
+.pc-title-{{ uid }} {
+  margin: 0 0 6px;
+}
+
+.pc-title-text-{{ uid }} {
+  color: {{ section.settings.product_title_color }} !important;
+  display: block;
+  font-size: {{ section.settings.product_title_size }}px;
+  line-height: 1.25;
+}
+
+.pc-link-{{ uid }}:hover .pc-title-text-{{ uid }} {
+  opacity: 0.8;
+}
+
+/* Prices */
+.pc-prices-{{ uid }} {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pc-price-{{ uid }} {
+  font-size: {{ section.settings.price_size }}px;
+  color: {{ section.settings.price_color }};
+  font-weight: 600;
+}
+
+.pc-compare-{{ uid }} {
+  font-size: {{ section.settings.compare_price_size }}px;
+  color: {{ section.settings.compare_price_color }};
+  text-decoration: line-through;
+}
+
+/* ===== Arrows ===== */
+.pc-arrow-{{ uid }} {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: {{ section.settings.arrow_size }}px;
+  height: {{ section.settings.arrow_size }}px;
+  background: {{ section.settings.arrow_bg_color }};
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease, background 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pc-arrow-{{ uid }}:hover {
+  filter: brightness(0.95);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.pc-arrow-{{ uid }}:active {
+  transform: translateY(-50%) scale(0.98);
+}
+
+.pc-prev-{{ uid }} { left: {{ section.settings.arrows_side_offset }}px; }
+.pc-next-{{ uid }} { right: {{ section.settings.arrows_side_offset }}px; }
+
+.pc-arrow-{{ uid }} svg {
+  width: calc({{ section.settings.arrow_size }}px * 0.5);
+  height: calc({{ section.settings.arrow_size }}px * 0.5);
+  fill: {{ section.settings.arrow_icon_color }};
+  display: block;
+}
+
+/* Dots */
+.pc-dots-{{ uid }} {
+  position: absolute;
+  bottom: {{ section.settings.dots_bottom_gap }}px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: {{ section.settings.dots_spacing }}px;
+  z-index: 10;
+}
+
+.pc-dot-{{ uid }} {
+  width: {{ section.settings.dots_size }}px;
+  height: {{ section.settings.dots_size }}px;
+  border-radius: 50%;
+  background: #ddd;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.pc-dot-{{ uid }}.active {
+  background: {{ section.settings.dots_active_color }};
+  transform: scale(1.3);
+}
+
+/* Mobile tweaks */
+@media (max-width: 749px) {
+  .pc-{{ uid }} { padding: 30px 15px; }
+
+  .pc-heading-{{ uid }} {
+    font-size: calc({{ section.settings.heading_size }}px * 0.8);
+    margin-bottom: 30px;
+  }
+
+  .pc-badge-{{ uid }} {
+    width: calc({{ section.settings.badge_size }}px * 0.8);
+    height: calc({{ section.settings.badge_size }}px * 0.8);
+    font-size: calc({{ section.settings.badge_text_size }}px * 0.8);
+  }
+
+  .pc-title-text-{{ uid }} {
+    font-size: calc({{ section.settings.product_title_size }}px * 0.9);
+  }
+
+  .pc-price-{{ uid }} {
+    font-size: calc({{ section.settings.price_size }}px * 0.9);
+  }
+
+  .pc-compare-{{ uid }} {
+    font-size: calc({{ section.settings.compare_price_size }}px * 0.9);
+  }
+
+  .pc-arrow-{{ uid }} {
+    width: calc({{ section.settings.arrow_size }}px * 0.8);
+    height: calc({{ section.settings.arrow_size }}px * 0.8);
+  }
+
+  .pc-arrow-{{ uid }} svg {
+    width: calc({{ section.settings.arrow_size }}px * 0.5 * 0.8);
+    height: calc({{ section.settings.arrow_size }}px * 0.5 * 0.8);
+  }
+
+  .pc-dots-{{ uid }} {
+    bottom: calc({{ section.settings.dots_bottom_gap }}px * 0.8);
+    gap: calc({{ section.settings.dots_spacing }}px * 0.8);
+  }
+
+  .pc-dot-{{ uid }} {
+    width: calc({{ section.settings.dots_size }}px * 0.8);
+    height: calc({{ section.settings.dots_size }}px * 0.8);
+  }
+}
+{% endstyle %}
+
+<div class="pc-{{ uid }} pc-{{ uid }}--{{ section.settings.layout_mode }}" {{ section.shopify_attributes }}>
+  {%- if section.settings.heading != blank -%}
+    <h2 class="pc-heading-{{ uid }}">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+
+  <div class="pc-container-{{ uid }}" data-pc-root="{{ uid }}">
+    <div class="pc-track-{{ uid }}" data-carousel-track>
+      {%- if section.settings.collection -%}
+        {%- for product in section.settings.collection.products limit: 12 -%}
+          <div class="pc-item-{{ uid }}">
+            <a href="{{ product.url }}" class="pc-link-{{ uid }}" aria-label="{{ product.title | escape }}">
+              <div class="pc-card-{{ uid }}">
+                <div class="pc-media-{{ uid }}">
+                  {%- if product.featured_media -%}
+                    <img
+                      src="{{ product.featured_media | image_url: width: 600 }}"
+                      alt="{{ product.featured_media.alt | escape }}"
+                      class="pc-img-{{ uid }}"
+                      loading="lazy"
+                      width="600"
+                      height="{{ 600 | divided_by: section.settings.image_aspect | round }}">
+                  {%- else -%}
+                    <div class="pc-placeholder-{{ uid }}">
+                      {{ 'product-1' | placeholder_svg_tag: 'pc-img-' | append: uid }}
+                    </div>
+                  {%- endif -%}
+
+                  {%- if product.compare_at_price > product.price -%}
+                    <div class="pc-badge-{{ uid }}">
+                      {{ section.settings.sale_badge_text | default: 'Sale' }}
+                    </div>
+                  {%- endif -%}
+                </div>
+
+                <h3 class="pc-title-{{ uid }}">
+                  <span class="pc-title-text-{{ uid }}">{{ product.title }}</span>
+                </h3>
+
+                <div class="pc-prices-{{ uid }}">
+                  <span class="pc-price-{{ uid }}">{{ product.price | money }}</span>
+                  {%- if product.compare_at_price > product.price -%}
+                    <span class="pc-compare-{{ uid }}">{{ product.compare_at_price | money }}</span>
+                  {%- endif -%}
+                </div>
+              </div>
+            </a>
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..8) -%}
+          <div class="pc-item-{{ uid }}">
+            <a href="#" class="pc-link-{{ uid }}" aria-label="Product title">
+              <div class="pc-card-{{ uid }}">
+                <div class="pc-media-{{ uid }}">
+                  <div class="pc-placeholder-{{ uid }}">
+                    {{ 'product-1' | placeholder_svg_tag: 'pc-img-' | append: uid }}
+                  </div>
+                  <div class="pc-badge-{{ uid }}">{{ section.settings.sale_badge_text | default: 'Sale' }}</div>
+                </div>
+
+                <h3 class="pc-title-{{ uid }}">
+                  <span class="pc-title-text-{{ uid }}">Product title</span>
+                </h3>
+
+                <div class="pc-prices-{{ uid }}">
+                  <span class="pc-price-{{ uid }}">$29.99</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.show_arrows -%}
+      <button class="pc-arrow-{{ uid }} pc-prev-{{ uid }}" type="button" data-dir="prev" aria-label="Previous slide">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+        </svg>
+      </button>
+      <button class="pc-arrow-{{ uid }} pc-next-{{ uid }}" type="button" data-dir="next" aria-label="Next slide">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+        </svg>
+      </button>
+    {%- endif -%}
+
+    {%- if section.settings.show_pagination -%}
+      <div class="pc-dots-{{ uid }}" data-dots></div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+(function () {
+  function initProductCarousel(sectionEl) {
+    if (!sectionEl) return;
+
+    const track = sectionEl.querySelector('[data-carousel-track]');
+    if (!track) return;
+
+    const items = track.children;
+    if (!items || items.length === 0) return;
+
+    let currentIndex = 0;
+    let itemsPerPage = {{ section.settings.products_per_row }};
+    let intervalId = null;
+
+    const autoplayEnabled = {{ section.settings.autoplay_enabled | json }};
+    const showPagination = {{ section.settings.show_pagination | json }};
+
+    const dotsContainer = sectionEl.querySelector('[data-dots]');
+
+    function getGap() {
+      const styles = getComputedStyle(track);
+      return parseFloat(styles.gap) || (window.innerWidth <= 749 ? 10 : 20);
+    }
+
+    function updateItemsPerPage() {
+      if (window.innerWidth <= 749) {
+        itemsPerPage = Number({{ section.settings.products_per_row_mobile }});
+      } else if (window.innerWidth <= 989) {
+        itemsPerPage = 2;
+      } else {
+        itemsPerPage = Number({{ section.settings.products_per_row }});
+      }
+    }
+
+    function maxIndex() {
+      return Math.max(0, items.length - itemsPerPage);
+    }
+
+    function setActiveDot() {
+      if (!showPagination || !dotsContainer) return;
+      Array.from(dotsContainer.children).forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIndex);
+      });
+    }
+
+    function move() {
+      const first = items[0];
+      if (!first) return;
+
+      const itemWidth = first.getBoundingClientRect().width;
+      const gap = getGap();
+      const offset = currentIndex * (itemWidth + gap);
+      track.style.transform = `translateX(-${offset}px)`;
+      setActiveDot();
+    }
+
+    function next() {
+      const m = maxIndex();
+      currentIndex = (currentIndex + 1) % (m + 1);
+      move();
+    }
+
+    function prev() {
+      const m = maxIndex();
+      currentIndex = (currentIndex - 1 + (m + 1)) % (m + 1);
+      move();
+    }
+
+    function createDots() {
+      if (!showPagination || !dotsContainer) return;
+      dotsContainer.innerHTML = '';
+      const pageCount = Math.max(1, items.length - itemsPerPage + 1);
+
+      for (let i = 0; i < pageCount; i++) {
+        const dot = document.createElement('div');
+        dot.className = `pc-dot-{{ uid }}${i === 0 ? ' active' : ''}`;
+        dot.addEventListener('click', () => {
+          currentIndex = i;
+          move();
+        });
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function startAuto() {
+      if (!autoplayEnabled) return;
+      stopAuto();
+      const speedMs = (Number({{ section.settings.autoplay_speed }}) || 4) * 1000;
+      intervalId = window.setInterval(next, speedMs);
+    }
+
+    function stopAuto() {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    }
+
+    // Bind arrows (if present)
+    sectionEl.querySelectorAll('[data-dir]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.dir === 'prev') prev();
+        else next();
+        stopAuto();
+      });
+    });
+
+    // Pause on hover
+    sectionEl.addEventListener('mouseenter', stopAuto);
+    sectionEl.addEventListener('mouseleave', startAuto);
+
+    // Init
+    updateItemsPerPage();
+    createDots();
+    move();
+    startAuto();
+
+    // Resize
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        updateItemsPerPage();
+        currentIndex = Math.min(currentIndex, maxIndex());
+        createDots();
+        move();
+      }, 200);
+    });
+  }
+
+  // Normal load
+  document.addEventListener('DOMContentLoaded', () => {
+    const sectionEl = document.querySelector('.pc-{{ uid }}');
+    initProductCarousel(sectionEl);
+  });
+
+  // Shopify Theme Editor support
+  document.addEventListener('shopify:section:load', (event) => {
+    if (!event || !event.target) return;
+    const sectionEl = event.target.querySelector('.pc-{{ uid }}') || event.target;
+    if (sectionEl && sectionEl.classList && sectionEl.classList.contains('pc-{{ uid }}')) {
+      initProductCarousel(sectionEl);
+    } else {
+      const inner = event.target.querySelector('.pc-{{ uid }}');
+      initProductCarousel(inner);
+    }
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Product carousel",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "header", "content": "Navigation Controls" },
+    { "type": "checkbox", "id": "autoplay_enabled", "label": "Enable auto-sliding", "default": true },
+    { "type": "range", "id": "autoplay_speed", "label": "Autoplay interval", "min": 2, "max": 10, "step": 1, "unit": "s", "default": 4 },
+    { "type": "checkbox", "id": "show_arrows", "label": "Show navigation arrows", "default": true },
+    { "type": "range", "id": "arrow_size", "label": "Arrow size (px)", "min": 32, "max": 60, "step": 4, "default": 44 },
+    { "type": "color", "id": "arrow_bg_color", "label": "Arrow background color", "default": "#ffffff" },
+    { "type": "color", "id": "arrow_icon_color", "label": "Arrow icon color", "default": "#333333" },
+    { "type": "range", "id": "arrows_side_offset", "label": "Arrows distance from sides (px)", "min": 0, "max": 60, "step": 4, "default": 12 },
+    { "type": "checkbox", "id": "show_pagination", "label": "Show pagination dots", "default": true },
+    { "type": "range", "id": "dots_bottom_gap", "label": "Dots distance from bottom (px)", "min": 10, "max": 80, "step": 2, "default": 20 },
+    { "type": "range", "id": "dots_spacing", "label": "Dots horizontal spacing (px)", "min": 6, "max": 20, "step": 1, "default": 12 },
+    { "type": "range", "id": "dots_size", "label": "Dots size (px)", "min": 6, "max": 16, "step": 1, "default": 10 },
+    { "type": "color", "id": "dots_active_color", "label": "Active dot color", "default": "#000000" },
+
+    { "type": "header", "content": "Layout & Appearance" },
+    {
+      "type": "select",
+      "id": "layout_mode",
+      "label": "Section width mode",
+      "options": [
+        { "value": "boxed", "label": "Boxed (centered)" },
+        { "value": "full", "label": "Full width (edge to edge)" }
+      ],
+      "default": "boxed"
+    },
+    { "type": "range", "id": "boxed_max_width", "label": "Boxed max-width (pixels)", "min": 800, "max": 2000, "step": 50, "unit": "px", "default": 1400 },
+    { "type": "color", "id": "background_color", "label": "Background color", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Product Image" },
+    {
+      "type": "select",
+      "id": "image_aspect",
+      "label": "Image aspect ratio (height / width)",
+      "options": [
+        { "value": "1.0", "label": "1:1 – Square" },
+        { "value": "1.25", "label": "5:4 – Slightly tall" },
+        { "value": "1.333", "label": "4:3 – Standard photo" },
+        { "value": "1.5", "label": "3:2 – Classic" },
+        { "value": "1.777", "label": "16:9 – Landscape" },
+        { "value": "0.8", "label": "4:5 – Portrait" },
+        { "value": "0.75", "label": "3:4 – Tall portrait" }
+      ],
+      "default": "1.25"
+    },
+    { "type": "range", "id": "image_radius", "label": "Image corner radius", "min": 0, "max": 30, "step": 2, "unit": "px", "default": 8 },
+
+    { "type": "header", "content": "Content" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Featured products" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+
+    { "type": "header", "content": "Products per row" },
+    { "type": "range", "id": "products_per_row", "label": "Desktop", "min": 2, "max": 6, "step": 1, "default": 4 },
+    {
+      "type": "select",
+      "id": "products_per_row_mobile",
+      "label": "Mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+
+    { "type": "header", "content": "Heading style" },
+    { "type": "font_picker", "id": "heading_font", "label": "Font", "default": "oswald_n5" },
+    { "type": "range", "id": "heading_size", "label": "Size", "min": 16, "max": 60, "step": 2, "unit": "px", "default": 32 },
+    { "type": "color", "id": "heading_color", "label": "Color", "default": "#232322" },
+
+    { "type": "header", "content": "Sale badge" },
+    { "type": "inline_richtext", "id": "sale_badge_text", "label": "Badge text", "default": "Sale" },
+    { "type": "range", "id": "badge_size", "label": "Badge size", "min": 40, "max": 80, "step": 5, "unit": "px", "default": 60 },
+    { "type": "range", "id": "badge_text_size", "label": "Text size", "min": 10, "max": 20, "step": 1, "unit": "px", "default": 14 },
+    { "type": "color", "id": "badge_background_color", "label": "Background color", "default": "#FF0000" },
+    { "type": "color", "id": "badge_text_color", "label": "Text color", "default": "#FFFFFF" },
+
+    { "type": "header", "content": "Product title" },
+    { "type": "range", "id": "product_title_size", "label": "Size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "product_title_color", "label": "Color", "default": "#232322" },
+
+    { "type": "header", "content": "Price" },
+    { "type": "range", "id": "price_size", "label": "Sale price size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 16 },
+    { "type": "color", "id": "price_color", "label": "Sale price color", "default": "#FF0000" },
+    { "type": "range", "id": "compare_price_size", "label": "Compare price size", "min": 12, "max": 24, "step": 1, "unit": "px", "default": 14 },
+    { "type": "color", "id": "compare_price_color", "label": "Compare price color", "default": "#999999" }
+  ],
+  "presets": [
+    { "name": "Product carousel" }
+  ]
+}
+{% endschema %}

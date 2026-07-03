@@ -1,0 +1,598 @@
+{%- comment -%}
+  X-TRAILERS Header (New Design) — Responsive + Controls (UPDATED)
+  ✅ Mobile/Tablet Breakpoint set to 1199px
+  ✅ Shows Mobile Layout (Burger Menu) on small laptops & tablets
+  ✅ Phone number is clickable (Safari fix included)
+  ✅ Search button width controller works strictly on mobile
+  ✅ FIXED: Search Text is BLACK and Background is WHITE
+{%- endcomment -%}
+
+{%- assign uid = section.id | replace: '-', '' | downcase -%}
+
+<header class="xt-header-{{ uid }} xt-mode-{{ section.settings.xt_width_mode }}" role="banner" {{ section.shopify_attributes }}>
+  {% style %}
+    .xt-header-{{ uid }}{ width:100%; }
+
+    .xt-header-{{ uid }} .xt-container{
+      max-width: {{ section.settings.xt_max_width }}px;
+      margin: 0 auto;
+      padding: 0 {{ section.settings.xt_side_pad }}px;
+    }
+
+    .xt-header-{{ uid }}.xt-mode-full .xt-container{
+      max-width: none;
+      width: 100%;
+    }
+
+    .xt-header-{{ uid }} a{ text-decoration:none; }
+
+    /* Promo Bar */
+    .xt-header-{{ uid }} .xt-promo{
+      background: {{ section.settings.xt_promo_bg }};
+      color: {{ section.settings.xt_promo_text_color }};
+      font-size: {{ section.settings.xt_promo_size }}px;
+      line-height: 1.4;
+      text-align:center;
+      padding: 12px 0;
+    }
+    .xt-header-{{ uid }} .xt-promo a{
+      color: {{ section.settings.xt_promo_link_color }};
+      text-decoration: underline;
+      font-weight: 600;
+    }
+
+    /* Top Utility Bar */
+    .xt-header-{{ uid }} .xt-util{
+      background: {{ section.settings.xt_util_bg }};
+      border-bottom: 1px solid rgba(0,0,0,0.10);
+    }
+    .xt-header-{{ uid }} .xt-util-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+      padding: 10px 0;
+    }
+    .xt-header-{{ uid }} .xt-util-left{
+      display:flex;
+      align-items:center;
+      gap: 16px;
+      flex: 0 0 auto;
+    }
+    .xt-header-{{ uid }} .xt-util-right{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap: 22px;
+      flex: 1 1 auto;
+      color: {{ section.settings.xt_util_text }};
+      font-size: {{ section.settings.xt_util_size }}px;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    /* Social Icons Fix */
+    .xt-header-{{ uid }} .xt-util-left .social-icons,
+    .xt-header-{{ uid }} .xt-util-left .social-icons ul{
+      margin:0 !important;
+      padding:0 !important;
+      display:flex !important;
+      gap: 14px !important;
+      align-items:center;
+      list-style:none !important;
+      justify-content:flex-start !important;
+    }
+    .xt-header-{{ uid }} .xt-util-left .social-icons a{
+      color: {{ section.settings.xt_util_icon }};
+      font-size: 16px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Info Items */
+    .xt-header-{{ uid }} .xt-info-wrap{
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap: 22px;
+      flex-wrap: wrap;
+    }
+    .xt-header-{{ uid }} .xt-info{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      color: {{ section.settings.xt_util_text }};
+    }
+
+    /* FIX: Force Phone Link Color in Safari */
+    .xt-header-{{ uid }} .xt-info a[href^="tel"]{
+      color: {{ section.settings.xt_util_text }} !important;
+      text-decoration: none !important;
+    }
+    .xt-header-{{ uid }} .xt-info a[href^="tel"]:hover{
+      color: {{ section.settings.xt_util_link_hover }} !important;
+    }
+
+    .xt-header-{{ uid }} .xt-info svg{
+      width: 18px;
+      height: 18px;
+      fill: {{ section.settings.xt_util_icon }};
+      opacity: .95;
+    }
+    .xt-header-{{ uid }} .xt-util-links{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .xt-header-{{ uid }} .xt-util-links a{ color: {{ section.settings.xt_util_text }}; }
+    .xt-header-{{ uid }} .xt-util-links a:hover{ color: {{ section.settings.xt_util_link_hover }}; }
+
+    /* Main Header Row */
+    .xt-header-{{ uid }} .xt-main{
+      background: {{ section.settings.xt_main_bg }};
+      padding: 16px 0;
+    }
+    .xt-header-{{ uid }} .xt-main-row{
+      display:grid;
+      grid-template-columns: 220px 1fr 220px;
+      align-items:center;
+      gap: 18px;
+    }
+
+    /* Logo */
+    .xt-header-{{ uid }} .xt-logo img{
+      width: {{ section.settings.xt_logo_width }}px;
+      max-width: 100%;
+      height:auto;
+      display:block;
+    }
+
+    /* Search */
+    .xt-header-{{ uid }} .xt-search{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-width: 0;
+    }
+    .xt-header-{{ uid }} .xt-search .search-form,
+    .xt-header-{{ uid }} .xt-search form{
+      width: 100%;
+      max-width: {{ section.settings.xt_search_max }}px;
+      margin: 0 auto;
+    }
+
+    /* Search Bar Wrapper */
+    .xt-header-{{ uid }} .xt-search .search-bar,
+    .xt-header-{{ uid }} .xt-search .search-form .search-bar{
+      display:flex;
+      align-items:center;
+      height: {{ section.settings.xt_search_h }}px;
+      border-radius: {{ section.settings.xt_search_radius }}px;
+      border: 2px solid rgba(255,255,255,0.35); /* Keeps border */
+      background: #ffffff; /* UPDATED: White background */
+      overflow:hidden;
+      min-width: 0;
+    }
+
+    /* Search Input Field - UPDATED for Black Text */
+    .xt-header-{{ uid }} .xt-search input,
+    .xt-header-{{ uid }} .xt-search .input-group-field{
+      flex: 1 1 auto;
+      min-width: 0;
+      height: 100%;
+      border: 0 !important;
+      background: #ffffff !important; /* Force white background */
+      color: #000000 !important;      /* Force black text */
+      padding: 0 18px !important;
+      outline: none !important;
+      font-size: {{ section.settings.xt_search_text_size }}px;
+    }
+    
+    /* Search Placeholder - Darker for visibility on white */
+    .xt-header-{{ uid }} .xt-search input::placeholder,
+    .xt-header-{{ uid }} .xt-search .input-group-field::placeholder{
+      color: rgba(0,0,0,0.55) !important;
+    }
+
+    .xt-header-{{ uid }} .xt-search .btn-search,
+    .xt-header-{{ uid }} .xt-search button[type="submit"],
+    .xt-header-{{ uid }} .xt-search .icon-search{
+      height: 100%;
+      width: {{ section.settings.xt_search_btn_w }}px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: {{ section.settings.xt_search_btn_bg }};
+      border-left: 2px solid rgba(255,255,255,0.35);
+      color: {{ section.settings.xt_search_btn_icon }};
+      flex: 0 0 auto;
+    }
+    .xt-header-{{ uid }} .xt-search .icon-search svg{ fill: {{ section.settings.xt_search_btn_icon }}; }
+
+    /* Right Actions */
+    .xt-header-{{ uid }} .xt-actions{
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      gap: 18px;
+      color: #fff;
+      min-width: 0;
+    }
+    .xt-header-{{ uid }} .xt-account{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      color: #fff;
+      font-size: {{ section.settings.xt_action_text_size }}px;
+      white-space: nowrap;
+    }
+    .xt-header-{{ uid }} .xt-account svg{
+      width: 22px;
+      height: 22px;
+      fill: #fff;
+      opacity: .95;
+    }
+
+    .xt-header-{{ uid }} .xt-cart{
+      position: relative;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      color:#fff;
+      flex: 0 0 auto;
+    }
+    .xt-header-{{ uid }} .xt-cart a{
+      color:#fff;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      height:100%;
+    }
+    .xt-header-{{ uid }} .xt-cart svg{ fill:#fff; }
+
+    .xt-header-{{ uid }} .xt-cart .cartCount,
+    .xt-header-{{ uid }} .xt-cart [data-cart-count]{
+      position:absolute;
+      top: 4px;
+      right: 4px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: {{ section.settings.xt_badge_bg }};
+      color: {{ section.settings.xt_badge_text }};
+      font-size: 12px;
+      font-weight: 700;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      line-height:1;
+    }
+
+    /* Mobile Burger */
+    .xt-header-{{ uid }} .xt-burger{
+      display:none;
+      flex-direction: column;
+      align-items:center;
+      justify-content:center;
+      gap: 5px;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: {{ section.settings.xt_burger_bg }};
+      border: 1px solid rgba(255,255,255,0.18);
+      cursor:pointer;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .xt-header-{{ uid }} .xt-burger .xt-bar{
+      display: block;
+      width: 20px;
+      height: 2px;
+      background-color: {{ section.settings.xt_burger_color }};
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* Breakpoints */
+
+    /* Force Mobile View on screens smaller than 1200px (Laptops, Tablets, Mobile) */
+    @media (max-width: 1199px){
+      .xt-header-{{ uid }} .xt-promo{
+        padding: 10px 0;
+        font-size: calc({{ section.settings.xt_promo_size }}px * 0.90);
+      }
+
+      .xt-header-{{ uid }} .xt-util-row{
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 4px 0;
+      }
+      .xt-header-{{ uid }} .xt-util-right{
+        flex: 1 1 auto;
+        justify-content: flex-end;
+      }
+      .xt-header-{{ uid }} .xt-info-wrap{
+        width: 100%;
+        justify-content: flex-end;
+        gap: 10px 16px;
+      }
+      {% if section.settings.xt_hide_address_mobile %}
+      .xt-header-{{ uid }} .xt-info--address{ display:none; }
+      {% endif %}
+      
+      /* Hide account text to save space */
+      .xt-header-{{ uid }} .xt-account span{ display:none; }
+
+      .xt-header-{{ uid }} .xt-main{ padding: 10px 0 12px; }
+
+      /* mobile layout: burger | logo(center) | actions, then search */
+      .xt-header-{{ uid }} .xt-main-row{
+        grid-template-columns: 44px 1fr auto;
+        grid-template-areas:
+          "burger logo actions"
+          "search search search";
+        gap: 10px;
+      }
+      .xt-header-{{ uid }} .xt-burger{ display:flex; grid-area: burger; }
+      .xt-header-{{ uid }} .xt-logo{ grid-area: logo; display:flex; justify-content:center; }
+      .xt-header-{{ uid }} .xt-actions{ grid-area: actions; justify-content:flex-end; gap: 12px; }
+      .xt-header-{{ uid }} .xt-search{ grid-area: search; width:100%; }
+
+      .xt-header-{{ uid }} .xt-search .search-form,
+      .xt-header-{{ uid }} .xt-search form{ max-width: 100%; }
+
+      .xt-header-{{ uid }} .xt-logo img{ width: {{ section.settings.xt_logo_width_mobile }}px; }
+
+      .xt-header-{{ uid }} .xt-search .search-bar,
+      .xt-header-{{ uid }} .xt-search .search-form .search-bar{
+        height: {{ section.settings.xt_search_h_mobile }}px;
+        border-radius: {{ section.settings.xt_search_radius_mobile }}px;
+      }
+
+      /* FIX: Strictly enforce Mobile Search Button Width */
+      .xt-header-{{ uid }} .xt-search .btn-search,
+      .xt-header-{{ uid }} .xt-search button[type="submit"],
+      .xt-header-{{ uid }} .xt-search .icon-search{
+        width: {{ section.settings.xt_search_btn_w_mobile }}px !important;
+        flex: 0 0 auto !important;
+      }
+
+      .xt-header-{{ uid }} .xt-cart{ width: 40px; height: 40px; }
+    }
+
+    @media (max-width: 420px){
+      .xt-header-{{ uid }} .xt-info-wrap{ gap: 8px 12px; }
+      .xt-header-{{ uid }} .xt-info svg{ width: 16px; height: 16px; }
+      .xt-header-{{ uid }} .xt-util-right{ font-size: calc({{ section.settings.xt_util_size }}px * 0.92); }
+    }
+  {% endstyle %}
+
+  {%- if section.settings.xt_show_promo and section.settings.xt_promo_html != blank -%}
+    <div class="xt-promo">
+      <div class="xt-container">
+        {{ section.settings.xt_promo_html }}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="xt-util">
+    <div class="xt-container">
+      <div class="xt-util-row">
+        <div class="xt-util-left">
+          {%- if section.settings.xt_show_social -%}
+            {% render 'social-media' %}
+          {%- endif -%}
+          {%- if section.settings.xt_show_phone and section.settings.xt_phone_text != blank -%}
+              <span class="xt-info xt-info--phone">
+                <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/phone.svg?v=1770632537" 
+                     alt="phone" 
+                     width="20" height="20">
+                <a href="tel:{{ section.settings.xt_phone_text | replace: ' ', '' | replace: '(', '' | replace: ')', '' }}">{{ section.settings.xt_phone_text }}</a>
+              </span>
+            {%- endif -%}
+
+           
+        </div>
+
+        <div class="xt-util-right">
+          <div class="xt-info-wrap">
+             {%- if section.settings.xt_show_address and section.settings.xt_address_text != blank -%}
+              <span class="xt-info xt-info--address">
+                <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/locations.svg?v=17706325387" 
+                     alt="location" 
+                     width="20" height="20">
+                <span>{{ section.settings.xt_address_text }}</span>
+              </span>
+            {%- endif -%}
+
+            {%- if shop.customer_accounts_enabled and section.settings.xt_show_account_links -%}
+              <span class="xt-util-links">
+                {%- if customer -%}
+                  <a href="{{ routes.account_url }}">My Account</a>
+                {%- else -%}
+                  <a href="{{ routes.account_login_url }}">Login</a>
+                  <span>|</span>
+                  <a href="{{ routes.account_register_url }}">Register</a>
+                {%- endif -%}
+              </span>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="xt-main">
+    <div class="xt-container">
+      <div class="xt-main-row">
+        
+        <button class="xt-burger" type="button" aria-label="Open menu">
+          <span class="xt-bar"></span>
+          <span class="xt-bar"></span>
+          <span class="xt-bar"></span>
+        </button>
+
+        <div class="xt-logo">
+          <a href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+            {%- if section.settings.xt_logo_image != blank -%}
+              <img src="{{ section.settings.xt_logo_image | image_url: width: 600 }}" alt="{{ shop.name | escape }}" loading="lazy">
+            {%- else -%}
+              <span style="color:#fff;font-weight:700;">{{ shop.name }}</span>
+            {%- endif -%}
+          </a>
+        </div>
+
+        <div class="xt-search">
+          {% if settings.enable_search %}
+            {% render 'search-bar' %}
+          {% endif %}
+        </div>
+
+        <div class="xt-actions">
+          {%- if shop.customer_accounts_enabled -%}
+            <a class="xt-account" href="{{ routes.account_url }}" aria-label="My account">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/profile_black.svg?v=1770704745" 
+                   alt="profile" 
+                   width="24" height="24">
+              <span>My Account</span>
+            </a>
+          {%- endif -%}
+
+          <div class="xt-cart" data-cart-header-02>
+            <a href="#" title="Cart" data-cart-toggle aria-label="Cart">
+              {% render 'icon-cart' %}
+              <span class="cartCount" data-cart-count>{{ cart.item_count }}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {%- if section.settings.xt_keep_mobile_renders -%}
+        <div class="xt-theme-mobile" style="display:none;">
+          {% render 'mobile-header' %}
+          {% render 'header-mobile' %}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</header>
+
+<script>
+  // Script to Connect Header Burger to Navigation Drawer
+  document.addEventListener("DOMContentLoaded", function() {
+    var headerBurger = document.querySelector(".xt-header-{{ uid }} .xt-burger");
+    
+    if(headerBurger) {
+      headerBurger.addEventListener("click", function(e) {
+        e.preventDefault();
+        
+        // Find the drawer created by the Navigation section
+        var drawer = document.querySelector(".xt-mobile-drawer");
+        var overlay = document.querySelector(".xt-mobile-drawer-overlay");
+        
+        if(drawer && overlay) {
+          drawer.classList.add("is-active");
+          overlay.classList.add("is-active");
+          document.body.style.overflow = "hidden";
+        } else {
+          console.warn("X-Trailers: Mobile Drawer not found. Ensure Navigation section is present.");
+        }
+      });
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Header – X-Trailers (New)",
+  "settings": [
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select",
+      "id": "xt_width_mode",
+      "label": "Width mode",
+      "options": [
+        { "value": "boxed", "label": "Boxed" },
+        { "value": "full", "label": "Full width" }
+      ],
+      "default": "boxed"
+    },
+    { "type": "range", "id": "xt_max_width", "label": "Boxed max width (px)", "min": 900, "max": 1920, "step": 20, "default": 1440 },
+    { "type": "range", "id": "xt_side_pad", "label": "Side padding (px)", "min": 10, "max": 60, "step": 2, "default": 24 },
+
+    { "type": "header", "content": "Promo bar" },
+    { "type": "checkbox", "id": "xt_show_promo", "label": "Show promo bar", "default": true },
+    {
+      "type": "liquid",
+      "id": "xt_promo_html",
+      "label": "Promo HTML",
+      "default": "<div style=\"font-weight:500;\">Get Quality Trailers with 5 Year Structural Warranty and 1 Year Component Warranty | Assembled in NZ | <a href='#' style='font-weight:700;'>Order Now</a></div>"
+    },
+    { "type": "color", "id": "xt_promo_bg", "label": "Promo background", "default": "#f4a321" },
+    { "type": "color", "id": "xt_promo_text_color", "label": "Promo text color", "default": "#111111" },
+    { "type": "color", "id": "xt_promo_link_color", "label": "Promo link color", "default": "#111111" },
+    { "type": "range", "id": "xt_promo_size", "label": "Promo font size (px)", "min": 12, "max": 22, "step": 1, "default": 16 },
+
+    { "type": "header", "content": "Top light bar" },
+    { "type": "color", "id": "xt_util_bg", "label": "Background", "default": "#ececec" },
+    { "type": "color", "id": "xt_util_text", "label": "Text color", "default": "#111111" },
+    { "type": "color", "id": "xt_util_icon", "label": "Icon color", "default": "#111111" },
+    { "type": "color", "id": "xt_util_link_hover", "label": "Link hover", "default": "#f4a321" },
+    { "type": "range", "id": "xt_util_size", "label": "Text size (px)", "min": 11, "max": 18, "step": 1, "default": 15 },
+
+    { "type": "checkbox", "id": "xt_show_social", "label": "Show social icons", "default": true },
+
+    { "type": "checkbox", "id": "xt_show_phone", "label": "Show phone", "default": true },
+    { "type": "text", "id": "xt_phone_text", "label": "Phone text", "default": "(09) 913 1487" },
+
+    { "type": "checkbox", "id": "xt_show_address", "label": "Show address", "default": true },
+    { "type": "text", "id": "xt_address_text", "label": "Address text", "default": "6C Rennie Dr, Mangere, Auckland" },
+
+    { "type": "checkbox", "id": "xt_hide_address_mobile", "label": "Hide address on mobile", "default": false },
+    { "type": "checkbox", "id": "xt_show_account_links", "label": "Show Login/Register", "default": true },
+
+    { "type": "header", "content": "Main black row" },
+    { "type": "color", "id": "xt_main_bg", "label": "Background", "default": "#000000" },
+
+    { "type": "header", "content": "Logo" },
+    { "type": "image_picker", "id": "xt_logo_image", "label": "Logo image" },
+    { "type": "range", "id": "xt_logo_width", "label": "Logo width (desktop px)", "min": 90, "max": 280, "step": 2, "default": 170 },
+    { "type": "range", "id": "xt_logo_width_mobile", "label": "Logo width (mobile px)", "min": 80, "max": 220, "step": 2, "default": 140 },
+
+    { "type": "header", "content": "Search styling" },
+    { "type": "range", "id": "xt_search_max", "label": "Search max width (px)", "min": 420, "max": 1200, "step": 20, "default": 900 },
+    { "type": "range", "id": "xt_search_h", "label": "Search height (desktop px)", "min": 36, "max": 60, "step": 2, "default": 44 },
+    { "type": "range", "id": "xt_search_h_mobile", "label": "Search height (mobile px)", "min": 34, "max": 58, "step": 2, "default": 44 },
+    { "type": "range", "id": "xt_search_radius", "label": "Search radius (desktop px)", "min": 6, "max": 30, "step": 1, "default": 10 },
+    { "type": "range", "id": "xt_search_radius_mobile", "label": "Search radius (mobile px)", "min": 6, "max": 30, "step": 1, "default": 10 },
+    { "type": "range", "id": "xt_search_btn_w", "label": "Search button width (desktop px)", "min": 44, "max": 120, "step": 2, "default": 84 },
+    { "type": "range", "id": "xt_search_btn_w_mobile", "label": "Search button width (mobile px)", "min": 44, "max": 110, "step": 2, "default": 72 },
+    { "type": "range", "id": "xt_search_text_size", "label": "Search text size (px)", "min": 12, "max": 18, "step": 1, "default": 15 },
+    { "type": "color", "id": "xt_search_btn_bg", "label": "Search button background", "default": "#ffffff" },
+    { "type": "color", "id": "xt_search_btn_icon", "label": "Search icon color", "default": "#000000" },
+
+    { "type": "header", "content": "Mobile burger" },
+    { "type": "color", "id": "xt_burger_bg", "label": "Burger background", "default": "rgba(255,255,255,0.08)" },
+    { "type": "color", "id": "xt_burger_color", "label": "Burger icon color", "default": "#ffffff" },
+
+    { "type": "header", "content": "Right actions" },
+    { "type": "range", "id": "xt_action_text_size", "label": "Account text size (px)", "min": 12, "max": 18, "step": 1, "default": 15 },
+    { "type": "color", "id": "xt_badge_bg", "label": "Cart badge background", "default": "#c62828" },
+    { "type": "color", "id": "xt_badge_text", "label": "Cart badge text", "default": "#ffffff" },
+
+    { "type": "header", "content": "Compatibility" },
+    { "type": "checkbox", "id": "xt_keep_mobile_renders", "label": "Keep mobile renders", "default": true }
+  ],
+  "presets": [
+    { "name": "Header – X-Trailers (New)" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,1059 @@
+  <!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if IE 9 ]><html class="ie9 no-js"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <!-- Preload the font for performance -->
+<link rel="preload" href="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/DMSans-VariableFont_opsz_wght.woff2?v=1770361425" as="font" type="font/woff2" crossorigin="anonymous">
+
+<!-- Favicon for Browser Tab -->
+<link rel="icon" type="image/jpeg" href="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/FACEBOOK-LOGO_2a1b8cd2-5f45-4e71-a231-e7b212c25db3.jpg?v=1642987093">
+
+<!-- Favicon for Apple Devices -->
+<link rel="apple-touch-icon" href="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/FACEBOOK-LOGO_2a1b8cd2-5f45-4e71-a231-e7b212c25db3.jpg?v=1642987093">
+
+<style>
+  /* @font-face declaration */
+  @font-face {
+    font-family: 'DMSans';
+    src: url('https://cdn.shopify.com/s/files/1/0541/9538/8609/files/DMSans-VariableFont_opsz_wght.woff2?v=1770361425') format('woff2');
+    font-weight: 100 900;
+    font-display: swap;
+  }
+
+  /* Applying custom font to elements */
+  h1, h2, h3, h4, h5, h6,
+  p, span, div, ul, ol, li, a, button, input, select, option, label, legend, textarea, small {
+    font-family: 'DMSans', sans-serif !important;
+  }
+</style>
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MV9FS3ZF');</script>
+<!-- End Google Tag Manager -->
+  
+<meta name="google-site-verification" content="LL010Qeei9sAio8zaljd8oZS7Tezm3IwsL4Bk4WnYT4" />
+  <!-- Basic page needs ================================================== -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+  <!-- Title and description ================================================== -->
+   {% unless template contains 'search' %}
+  <title>
+    {{ page_title }}
+    {% if current_tags %} &ndash; {{'general.title.tagged' | t}} 
+    "{{ current_tags | join: ', ' }}"
+    {% endif %}
+    {% if current_page != 1 %} &ndash; {{'general.title.page' | t}} 
+    {{ current_page }}
+    {% endif %}
+
+    {% unless page_title contains shop.name %} &ndash; 
+    {{ shop.name }}
+    {% endunless %}
+  </title>
+  {% else %}
+  <title>
+   {{'general.title.search' | t}} {{search.results_count}} {{'general.title.search_results' | t}} "{{search.terms}}"  &ndash; {{ shop.name }} 
+  </title>
+  {% endunless %}
+
+  {% if page_description %}
+  <meta name="description" content="{{ page_description | escape | split: '[/countdown]' | last | strip_html }}">
+  {% endif %}
+
+  <!-- Product meta ================================================== -->
+  {% render 'fb-open-graph-tags' %}
+  {% render 'twitter-card' %}
+
+  <!-- Helpers ================================================== -->
+  <link rel="canonical" href="{{ canonical_url }}">
+  <link canonical-shop-url="{{ shop.url }}/">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="preload" href="{{ 'vendor.min.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'theme-styles.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'theme-styles-responsive.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'theme-settings.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'header-05.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'header-06.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'header-07.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'header-08.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'footer-06.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'footer-07.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'footer-08.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'footer-09.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'product-skin.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'layout_style_1170.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'layout_style_fullwidth.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'layout_style_flower.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'layout_style_suppermarket.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'layout_style_surfup.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'product-supermarket.css' | asset_url }}" as="style">
+  <link rel="preload" href="{{ 'jquery.min.js' | asset_url }}" as="script">
+
+  
+ <!-- Added By Asiri  -->
+  <style>
+.home-slideshow .item {
+  position: relative;
+  overflow: hidden;
+}
+
+.home-slideshow .item::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2); /* black overlay with 50% opacity */
+  z-index: 1;
+}
+
+.home-slideshow .item img {
+  z-index: 0;
+}
+
+.gpo-choicelist input+label:after {
+    transform: translateY(-50%) !important;
+}
+
+.home-slideshow .slick-slide {
+  height: 500px;
+}
+
+@media only screen and (max-width: 576px) {
+  .home-slideshow .slick-slide {
+    height: 350px;
+  }
+  .home-slideshow .slide-content.abs_center {
+    width: 100% !important;
+  }
+}
+ 
+  </style>
+{% section 'holiday-notice-bar' %}
+  <!-- End Added by Asiri -->
+
+  
+  <!-- Favicon -->
+  {% if settings.favicon != blank %}
+  <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+  {% endif %}
+  
+  <!-- Styles -->
+  {% render 'css-variables' %}
+  {% render 'head_styles' %}
+  
+   <!-- Scripts -->
+  {% render 'head_scripts' %}
+
+  <!-- Header hook for plugins ================================ -->
+  {{ content_for_header }}
+
+  <!--[if lt IE 9]>
+  {{ '//html5shiv.googlecode.com/svn/trunk/html5.js' | script_tag }}
+  <![endif]-->
+
+  {% comment %}
+    If you store has customers disabled, you can remove the following JS file
+  {% endcomment %}
+  
+  {% if template contains 'customers' %}
+    {{ 'shopify_common.js' | shopify_asset_url | script_tag }}
+    {{ 'customer_area.js'  | shopify_asset_url | script_tag }}
+  {% endif %}
+
+  {% render 'linked-options' %}
+  {% if template contains 'product' %}
+  <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+  {% endif %}
+
+  <script type="text/javascript">
+      (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "r5dwledbta");
+  </script>
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> -->
+  {% render 'rapid-search-settings' %}
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    if (window.location.search.includes('section_id=store-availability')) {
+        window.location.href = '/404';
+    }
+});
+</script>
+  {% if request.path contains 'section_id=store-availability' %}
+   <meta http-equiv="refresh" content="0; url=/404">
+{% endif %}
+
+
+            <!-- Overriding h1 to top -->
+          <!-- <script>
+          document.addEventListener("DOMContentLoaded", function() {
+            // Check if this is the home page.
+            // Adjust the condition as needed if your home page URL is different.
+            if (window.location.pathname === "/") {
+              return;
+            }
+          
+            // Get all current <h1> elements (the NodeList is static)
+            var originalH1s = document.querySelectorAll("h1");
+          
+            if (originalH1s.length > 0) {
+              // Save the inner content of the first <h1>
+              var h1Content = originalH1s[0].innerHTML;
+          
+              // Create a duplicate <h1> with the same content
+              var duplicateH1 = document.createElement("h1");
+              duplicateH1.innerHTML = h1Content;
+          
+              // Hide the duplicate from users
+              duplicateH1.style.display = "none";
+              duplicateH1.style.position = "absolute";
+              duplicateH1.style.left = "-9999px";
+              duplicateH1.style.opacity = "0";
+              duplicateH1.style.height = "0px";
+              duplicateH1.style.width = "0px";
+              duplicateH1.style.overflow = "hidden";
+          
+              // Prepend the duplicate to the body (so it appears at the very top)
+              document.body.prepend(duplicateH1);
+          
+              // Convert each of the original <h1> elements to <h2>
+              // This includes the first one as well.
+              originalH1s.forEach(function(h1El) {
+                var newH2 = document.createElement("h2");
+                newH2.innerHTML = h1El.innerHTML;
+                h1El.parentNode.replaceChild(newH2, h1El);
+              });
+            }
+          });
+          </script> -->
+<script>
+  
+  document.addEventListener("DOMContentLoaded", function () {
+  const body = document.body;
+  const headings = body.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+  let foundH1 = false;
+  headings.forEach((el) => {
+    if (el.tagName === "H1") {
+      foundH1 = true;
+      return; // keep the first <h1>
+    }
+    if (!foundH1) {
+      // Replace with <div> preserving the content and classes
+      const div = document.createElement("div");
+      div.innerHTML = el.innerHTML;
+      [...el.attributes].forEach(attr => div.setAttribute(attr.name, attr.value));
+      el.replaceWith(div);
+    }
+  });
+});
+
+  
+
+</script>
+        <!-- New Custom CSS -->
+    {{ 'new-custom.css' | asset_url | stylesheet_tag }}
+
+  <!-- Schema -->
+
+ {% comment %} {% unless template == 'collection' or template == 'product' or request.path == '/pages/contact-us' %}
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://x-trailers.co.nz/#organization",
+    "name": "X-Trailers",
+    "alternateName": "X-Trailers New Zealand",
+    "description": "New Zealand's premier trailer manufacturer providing high-quality, galvanized trailers for businesses, farms, and individuals with 5-year structural warranty and 10 years of manufacturing experience.",
+    "url": "https://x-trailers.co.nz",
+    "logo": "https://x-trailers.co.nz/logo.png",
+    "foundingDate": "2015",
+    "numberOfEmployees": "10-50",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "NZ",
+      "addressRegion": "New Zealand"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+64-9-913-1487",
+      "contactType": "customer service",
+      "availableLanguage": "English"
+    },
+    "sameAs": [
+      "https://www.facebook.com/xtrailersnz",
+      "https://www.instagram.com/xtrailersnz"
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "X-Trailers Product Catalog",
+      "itemListElement": [
+        { "@type": "OfferCatalog", "name": "Domestic Trailers" },
+        { "@type": "OfferCatalog", "name": "Commercial Trailers" },
+        { "@type": "OfferCatalog", "name": "Trailer Parts & Accessories" }
+      ]
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": "https://x-trailers.co.nz/#localbusiness",
+    "name": "X-Trailers",
+    "image": "https://x-trailers.co.nz/images/facility.jpg",
+    "description": "Leading New Zealand trailer manufacturer specializing in hot-dipped galvanized trailers with 5-year structural warranty. Serving businesses, farms, and individuals across New Zealand.",
+    "url": "https://x-trailers.co.nz",
+    "telephone": "+64-9-913-1487",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "NZ",
+      "addressRegion": "New Zealand"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "-36.8485",
+      "longitude": "174.7633"
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "08:00",
+        "closes": "17:00"
+      }
+    ],
+    "priceRange": "$155 - $22,990",
+    "currenciesAccepted": "NZD",
+    "paymentAccepted": "Cash, Credit Card, Bank Transfer",
+    "areaServed": {
+      "@type": "Country",
+      "name": "New Zealand"
+    },
+    "serviceType": "Trailer Manufacturing and Sales",
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Trailer Products and Services"
+    }
+  }
+]
+</script>
+{% endunless %} {% endcomment %}
+
+
+{% if template.name == 'product' and product.metafields.custom.seo_faq_schema %}
+  <script type="application/ld+json">
+    {{ product.metafields.custom.seo_faq_schema | raw }}
+  </script>
+{% endif %}
+{% if collection %}
+  {% assign xt_image_fix_collections = 'trailer-parts,lighting-electrical' | split: ',' %}
+
+  {% if xt_image_fix_collections contains collection.handle %}
+    <style>
+      :root {
+        --xt-parts-image-size: 92%;
+      }
+
+      .template-collection .product-grid-image.adaptive_height {
+        position: relative !important;
+        overflow: hidden !important;
+        background: #ffffff !important;
+      }
+
+      .template-collection .product-grid-image.adaptive_height > picture,
+      .template-collection .product-grid-image.adaptive_height > .images-two,
+      .template-collection .product-grid-image.adaptive_height > .images-two > picture {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        display: block !important;
+      }
+
+      .template-collection .product-grid-image.adaptive_height img {
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        right: auto !important;
+        bottom: auto !important;
+        transform: translate(-50%, -50%) !important;
+
+        width: auto !important;
+        height: auto !important;
+        max-width: var(--xt-parts-image-size) !important;
+        max-height: var(--xt-parts-image-size) !important;
+
+        object-fit: contain !important;
+        object-position: center center !important;
+        display: block !important;
+      }
+    </style>
+  {% endif %}
+{% endif %}
+<!-- End Of Schema -->
+{% unless template.name == 'product' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://x-trailers.co.nz/#organization",
+  "name": "X-Trailers",
+  "alternateName": "X-Trailers New Zealand",
+  "url": "https://x-trailers.co.nz/",
+  "logo": "https://x-trailers.co.nz/logo.png",
+  "description": "X-Trailers New Zealand provides high-quality trailers and trailer parts across New Zealand.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "NZ",
+    "addressRegion": "New Zealand"
+  }
+}
+</script>
+{% endunless %}
+</head>
+
+    {% if settings.layout_body == 'full' %}    
+        {%- assign layout_class = 'body-full' -%}   
+    {% elsif settings.layout_body == 'boxed' %} 
+        {%- assign layout_class = 'body-boxed' -%} 
+    {% endif %}
+
+    {% if settings.header_layout == 'vertical' %}
+        {%- assign header_class = 'header-vertical-tpl' -%}
+    {% elsif settings.header_layout == 'parallax' %}
+       {%- assign header_class = 'header-parallax-tpl' -%}
+    {% elsif settings.header_layout == '02' %}
+        {%- assign header_class = 'header-02-tpl' -%}
+    {% endif %}
+
+    {% if settings.layout_home == 'layout_home_3' %}
+      {%- assign home_class = 'layout_home_3' -%}
+    {% elsif settings.layout_home == 'layout_home_4' %}
+      {%- assign home_class = 'layout_home_4' -%}
+    {% elsif settings.layout_home == 'layout_home_5' %}
+      {%- assign home_class = 'layout_home_5' -%}
+    {% elsif settings.layout_home == 'layout_home_6' %}
+      {%- assign home_class = 'layout_home_6' -%}
+    {% elsif settings.layout_home == 'layout_home_7' %}
+      {%- assign home_class = 'layout_home_7' -%}
+    {% elsif settings.layout_home == 'layout_home_9' %}
+      {%- assign home_class = 'layout_home_9' -%}
+    {% elsif settings.layout_home == 'layout_home_14' %}
+      {%- assign home_class = 'layout_home_14' -%}
+    {% elsif settings.layout_home == 'layout_home_18' %}
+      {%- assign home_class = 'layout_home_18' -%}
+    {% endif %} 
+
+
+<body data-url-lang="{{ routes.cart_url }}" id="{{ page_title | handle }}" class="{{ header_class }} {{ layout_class }} {% if customer %}customer-logged-in{% endif %}
+{% if template.suffix == 'landing' %} template-index{% else %} template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}{% endif %} {{settings.style_product_grid}}{% if settings.layout_style == 'layout_style_1' %} layout_default{% else %} {{settings.layout_style}}{% endif %} {{ home_class }}
+{% unless settings.enable_before_you_leave_mb %} before-you-leave-disableMobile{% endunless %}{% if settings.product_layout == 'skin_1' %} product_layout_skin_1{% elsif settings.product_layout == 'supermarket' %} product_layout_supermarket{% endif %}{% if settings.layout_body == 'custom_width' %} custom_width{% endif %}{% if settings.enable_button_add_to_cart_color %} enable_button_add_to_cart_color{% endif %}{% if settings.enable_hover_video_product_items %} enable_hover_video_product_items{% endif %}
+" data-page-handle="{{ page_title | handle }}">
+
+    <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MV9FS3ZF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+  
+  	{% if template contains 'index' %}  
+    <h1 style="display: none">{{ page_title | split: '|' | first }}</h1>
+    {% endif %}
+    {% render 'wrapper-header' %}   
+
+    {% if settings.header_layout == 'vertical' %}
+    <div class="flex-nav-vertical">
+    {% endif %}    
+
+    {% if settings.header_layout == 'vertical' %}
+    {% section 'navigation-vertical-menu' %}
+    {% endif %}
+	{% render 'scheme' %}
+    <div class="wrapper-container wrapper-body">	
+        <main class="main-content" role="main">      
+            {{ content_for_layout }}
+        </main>
+
+        {% if settings.layout_style == 'layout_style_surfup' %}
+          {% section 'home-brands' %}
+        {% endif %}
+
+        {% if settings.enable_ask_an_expert %}
+          {% if settings.enable_ask_an_expert_sticky %}
+          <div class="ask-an-expert-sticky" style="display: none;">
+            <a href="javascript:void(0)" title="Ask An Expert" class="btn_ask_an_expert" data-toggle="modal" data-target="#ask_an_expert">
+              {% if settings.image_ask_an_expert_sticky != blank %}
+                <img data-srcset="{{ settings.image_ask_an_expert_sticky | img_url: '200x200' }}" class="lazyload" data-sizes="auto">
+              {% else %}
+                <div class="not_img">
+                    200 x 100px
+                </div>   
+              {% endif %}
+            </a>
+          </div>
+          {% endif %}    
+        {% endif %}    
+
+        {% if settings.footer_layout == 'default' %}        
+        {% section 'footer' %}
+        {% elsif settings.footer_layout == 'parallax' %}
+        {% section 'footer-parallax' %}
+        {% elsif settings.footer_layout == '02' %}
+        {% section 'footer-2' %}
+        {% elsif settings.footer_layout == '03' %}
+        {% section 'footer-3' %}
+        {% elsif settings.footer_layout == '04' %}
+        {% section 'footer-4' %}
+        {% elsif settings.footer_layout == '05' %}
+        {% section 'footer-5' %}
+        {% elsif settings.footer_layout == '06' %}
+        {% section 'footer-6' %}
+        {% elsif settings.footer_layout == '07' %}
+        {% section 'footer-7' %}
+        {% elsif settings.footer_layout == '08' %}
+        {% section 'footer-8' %}
+        {% elsif settings.footer_layout == '09' %}
+        {% section 'footer-9' %}
+        {% endif %}
+        
+        <div class="footbar-fixed {% if template contains 'product' %}footbar-fixed-product{% endif %}">
+            {% section 'someone-purchased' %}
+            {% section 'GDPR-modal' %}
+            {% if template contains 'product' %}
+              {% if settings.display_sticky %} 
+                  {% render 'sticky-add-to-cart' with product as product %}
+              {% endif %}
+            {% endif %}
+        </div>
+        
+      {% if settings.enable_backtotop %}
+        <div id="back-top" style="display: none;">
+            <a class="nav_up" href="#top" title="Back to top">
+                <i class="fa fa-angle-up" aria-hidden="true"></i>
+            </a>
+        </div>  
+      {% endif %}
+    </div>
+
+    {% if settings.header_layout == 'vertical' %}
+    </div>
+    {% endif %}
+
+    {% if settings.enable_compare_product and template == 'collection' %}
+      <div class="compare-link">
+        <a href="javascript:void(0)" data-compare-selected>
+          <span class="compare-text" {% if settings.enable_multilang %}data-translate="collections.general.compare_selected"{% endif %}>{{ 'collections.general.compare_selected' | t }}</span>
+          <span class="countPill countPill--positive countPill--alt" data-compare-count></span>
+        </a>
+      </div>
+    {% endif %}
+    
+    {% render 'footer_scripts' %}
+    
+    {% render 'sweettooth-widgets' %}
+
+    {% render 'search-autocomplete' %}
+    
+    {% if settings.header_layout == 'default' %}
+      {% render 'customer_links' %}
+    {% else %}
+    <div class="translate-header" data-translate-header>
+        {% render 'customer_links' %}
+        {% render 'wrapper-top-cart' %}
+    </div>
+    {% endif %}
+
+    {% render 'size-chart' %}
+  
+  	{% render 'size-chart-quickview' %}
+        
+    {% render 'message-modal' %}
+    
+    {% render 'newsletter' %}      
+    
+    {% if template contains 'product' or settings.enable_ask_an_expert_sticky %}
+      {% render 'ask_an_expert' %}
+    {% endif %}
+
+    {% if template contains 'product'%}
+      {% render 'compareColor-popup' %}
+    {% endif %}
+    
+    {% render 'recently-viewed-products'%}
+    <div class="wrapper-overlay"></div>
+{% include 'booster-recommendation' %}
+
+
+{% comment %}
+  {% include 'globo.options.scripts' %}
+{% endcomment %} 
+
+<script>
+ document.addEventListener("DOMContentLoaded", function () {
+    if (typeof GPOConfigs !== 'undefined') {
+      GPOConfigs.theme.product.variantSelector = "input[name='id'][type='hidden']";
+      GPOConfigs.initialize();
+    }
+  });
+</script>
+
+{% comment %}
+  this is for calculate values in product page. Payment methods 
+{% endcomment %} 
+<script>
+  function parsePrice(text) {
+    if (!text) return 0;
+    return parseFloat(
+      text.replace(/[^0-9.,]/g, '').replace(',', '').replace(/(\.\d{2})\d+$/, '$1')
+    );
+  }
+
+  function formatMoney(amount) {
+    return `$${amount.toLocaleString('en-NZ', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })} NZD`;
+  }
+
+  function updatePaymentAmounts() {
+    const totalSpan = document.querySelector('.total-money');
+    if (!totalSpan) return;
+
+    const price = parsePrice(totalSpan.textContent);
+    if (isNaN(price)) return;
+
+    const spans = document.querySelectorAll('.mtf-monthly');
+    spans.forEach((el, i) => {
+      let parts = [6, 12, 4, 60];
+      if (i < parts.length) {
+        const months = parts[i];
+        el.textContent = formatMoney(price / months);
+      } else if (el.closest('.mtf-payments-banner')) {
+        // Fallback for 60-month inside MTF even if other spans exist
+        el.textContent = formatMoney(price / 60);
+      }
+    });
+  }
+
+  // Observe price changes
+  const target = document.querySelector('.total-money');
+  if (target) {
+    const observer = new MutationObserver(updatePaymentAmounts);
+    observer.observe(target, { childList: true, subtree: true });
+  }
+
+  // Fallback update triggers
+  document.addEventListener('change', updatePaymentAmounts);
+  document.addEventListener('click', updatePaymentAmounts);
+
+  // Initial call
+  updatePaymentAmounts();
+</script>
+
+<!-- FINANCE AND PREORDER LABELS -->
+{% comment %} <script>
+(function () {
+  // ——— CONFIG ———
+  const PRICE_THRESHOLD = 4000; // dollars
+  const FINANCE_CLASS  = 'finance-badge';
+  const PREORDER_CLASS = 'preorder-badge';
+
+  // ——— HELPERS ———
+  function parsePrice(text) {
+    if (!text) return NaN;
+    const cleaned = text.replace(/[^\d.,]/g, '');
+    if (cleaned.includes(',') && cleaned.includes('.')) return parseFloat(cleaned.replace(/,/g, ''));
+    if (cleaned.includes(',') && !cleaned.includes('.')) return parseFloat(cleaned.replace(/,/g, ''));
+    return parseFloat(cleaned);
+  }
+
+  function ensureRelative(el) {
+    if (!el) return;
+    const pos = getComputedStyle(el).position;
+    if (pos === 'static') el.style.position = 'relative';
+  }
+
+  function addBadge(imgWrap, text, className) {
+    if (!imgWrap) return;
+    ensureRelative(imgWrap);
+    let badge = imgWrap.querySelector('.' + className);
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.className = className + ' corner-badge';
+      imgWrap.appendChild(badge);
+    }
+    if (badge.textContent !== text) badge.textContent = text;
+  }
+
+  function removeBadge(imgWrap, className) {
+    const b = imgWrap && imgWrap.querySelector('.' + className);
+    if (b) b.remove();
+  }
+
+  // robustly read product JSON from archive card
+  function parseCardJson(cardRoot) {
+    const attr = cardRoot.getAttribute('data-json-product');
+    if (!attr) return null;
+    try {
+      return JSON.parse(attr.replace(/&quot;/g, '"'));
+    } catch (e) { return null; }
+  }
+
+  // ARCHIVE: price check
+  function cardPriceOverThreshold(cardRoot) {
+    const priceEl =
+      cardRoot.querySelector('span[data-price-grid]') ||
+      cardRoot.querySelector('.price-box .special-price') ||
+      cardRoot.querySelector('.price-box .price-regular span') ||
+      cardRoot.querySelector('[data-product-price], .price'); // fallback
+    if (!priceEl) return false;
+    const p = parsePrice(priceEl.textContent);
+    return !isNaN(p) && p > PRICE_THRESHOLD;
+  }
+
+  // ARCHIVE: preorder / OOS check (uses data-json-product first)
+  function cardIsPreorderOrOOS(cardRoot) {
+    // 1) Prefer product JSON availability
+    const json = parseCardJson(cardRoot);
+    if (json && Array.isArray(json.variants) && json.variants.length) {
+      const anyAvailable = json.variants.some(v => v && v.available === true);
+      if (!anyAvailable) return true; // all variants unavailable => treat as pre-order/OOS
+    }
+
+    // 2) Buttons / inputs / labels as fallback
+    const btn = cardRoot.querySelector(
+      '.action [value*="preorder" i], .action [value*="pre-order" i], .action [value*="sold out" i], .action [disabled]'
+    );
+    if (btn) return true;
+
+    const text = (cardRoot.textContent || '').toLowerCase();
+    if (
+      text.includes('pre order') ||
+      text.includes('pre-order') ||
+      text.includes('preorder') ||
+      text.includes('out of stock')
+    ) return true;
+
+    // 3) Class hint
+    if (cardRoot.classList.contains('sold-out') || (cardRoot.closest && cardRoot.closest('.product-item.sold-out'))) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // PDP: price
+  function singlePriceOverThreshold() {
+    const el =
+      document.querySelector('span[data-price-single]') ||
+      document.querySelector('.product-single .price-box .special-price') ||
+      document.querySelector('.product-single .price-box .price-regular span') ||
+      document.querySelector('.price-box .special-price') ||
+      document.querySelector('.price-box .price-regular span') ||
+      document.querySelector('[data-product-price], .product .price'); // fallback
+    if (!el) return false;
+    const p = parsePrice(el.textContent);
+    return !isNaN(p) && p > PRICE_THRESHOLD;
+  }
+
+  // PDP: preorder / OOS
+  function singleIsPreorderOrOOS() {
+    const inv = document.querySelector('.product-inventory span');
+    const invText = inv ? inv.textContent.toLowerCase() : '';
+    if (invText.includes('out of stock')) return true;
+
+    const preorderBtn =
+      document.querySelector('[data-essential-preorder-element="button"]') ||
+      document.querySelector('#product-add-to-cart[value*="preorder" i]') ||
+      document.querySelector('#product-add-to-cart[value*="pre-order" i]');
+    if (preorderBtn) return true;
+
+    const disabledATC = document.querySelector('#product-add-to-cart:disabled, [name="add"][disabled]');
+    if (disabledATC) return true;
+
+    return false;
+  }
+
+  // ——— APPLY BADGES ———
+  function scanArchivePages() {
+    // Scope to common collection containers if present to reduce scanning
+    const roots = document.querySelectorAll('.products, .collection-products, .grid, body');
+    roots.forEach(root => {
+      root.querySelectorAll('.inner.product-item').forEach(cardRoot => {
+        const imgWrap =
+          cardRoot.querySelector('.product-image.image-swap') ||
+          cardRoot.querySelector('.product-image');
+        if (!imgWrap) return;
+
+        // FINANCE
+        if (cardPriceOverThreshold(cardRoot)) addBadge(imgWrap, 'FINANCE', FINANCE_CLASS);
+        else removeBadge(imgWrap, FINANCE_CLASS);
+
+        // PRE ORDER
+        {% comment %} if (cardIsPreorderOrOOS(cardRoot)) addBadge(imgWrap, 'PRE ORDER', PREORDER_CLASS);
+        else removeBadge(imgWrap, PREORDER_CLASS); {% endcomment %}
+      });
+    });
+  }
+
+  function scanSingleProductPage() {
+    const galleryWrap =
+      document.querySelector('.product-img-box .wrapper-images') ||
+      document.querySelector('.product-img-box') ||
+      document.querySelector('.product-photo-container');
+    if (!galleryWrap) return;
+
+    if (singlePriceOverThreshold()) addBadge(galleryWrap, 'FINANCE', FINANCE_CLASS);
+    else removeBadge(galleryWrap, FINANCE_CLASS);
+
+    if (singleIsPreorderOrOOS()) addBadge(galleryWrap, 'PRE ORDER', PREORDER_CLASS);
+    else removeBadge(galleryWrap, PREORDER_CLASS);
+  }
+
+  function run() {
+    scanArchivePages();
+    scanSingleProductPage();
+  }
+
+  // Initial pass
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run, { once: true });
+  } else {
+    run();
+  }
+
+  // SAFER OBSERVER: no attribute watching; debounce; ignore badge-only mutations
+  let scheduled = false;
+  function isBadgeMutation(m) {
+    const added = Array.from(m.addedNodes || []);
+    const removed = Array.from(m.removedNodes || []);
+    const nodes = added.concat(removed);
+    if (nodes.some(n => n.nodeType === 1 && n.classList && n.classList.contains('corner-badge'))) return true;
+    if (m.target && m.target.closest && m.target.closest('.corner-badge')) return true;
+    return false;
+  }
+
+  const mo = new MutationObserver((mutations) => {
+    // If every mutation is just our badges, ignore
+    if (mutations.length && mutations.every(isBadgeMutation)) return;
+
+    if (!scheduled) {
+      scheduled = true;
+      requestAnimationFrame(() => {
+        scheduled = false;
+        try { run(); } catch (e) {}
+      });
+    }
+  });
+
+  mo.observe(document.body, { childList: true, subtree: true });
+})();
+</script> {% endcomment %}
+
+{% comment %} Code updated 12/06/2026 {% endcomment %}
+ <script>
+document.addEventListener("DOMContentLoaded", function() {
+  const FINANCE_CLASS  = 'finance-badge';
+  const PREORDER_CLASS = 'preorder-badge';
+
+  // --- SINGLE PRODUCT PAGE ---
+  if (typeof product !== 'undefined' && product.collections) {
+    const inTrailerParts = product.collections.some(c => c.handle === 'trailer-parts');
+    if (inTrailerParts) {
+      const badge = document.querySelector('.product-img-box .finance-badge');
+      if (badge) badge.remove();
+    }
+  }
+
+  // --- COLLECTION / GRID PAGES ---
+  if (window.productMetafields && Array.isArray(window.productMetafields)) {
+    document.querySelectorAll('.inner.product-item[data-product-id]').forEach(card => {
+      const rawId = card.getAttribute('data-product-id');
+      if (!rawId) return;
+      const productId = rawId.replace(/^product-/, '');
+      const data = window.productMetafields.find(p => String(p.id) === productId);
+
+      if (data && data.collections && data.collections.includes('trailer-parts')) {
+        const financeBadge = card.querySelector('.finance-badge');
+        if (financeBadge) financeBadge.remove();
+      }
+    });
+  }
+});
+</script>
+
+<style>
+.corner-badge{
+  position:absolute;
+  top:18px;
+  z-index:3;
+  pointer-events:none;
+  padding:8px 12px !important;
+  font-size:14px;
+  font-weight:bold;
+  color:#fff;
+  line-height:1;
+  border-radius:0;
+  text-transform:uppercase;
+}
+
+/* FINANCE: left, amber */
+.finance-badge{ left:0; top:0; background:#FBB03A; }
+
+/* PRE ORDER: right, green */
+.preorder-badge{ right:0; top:0; background:#22c55e; }
+
+@media screen and (max-width: 576px) {
+  .inner.product-item .finance-badge, .inner.product-item .preorder-badge-injected {
+    font-size: 10px !important;
+  }
+}
+</style>
+<!-- END FINANCE AND PREORDER LABELS -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.product-inventory').forEach(inv => {
+    const text = inv.textContent.trim().toLowerCase();
+    if (text.includes('out of stock')) {
+      inv.style.display = 'none';
+    }
+  });
+});
+</script>
+
+{% comment %} <script>
+window.productMetafields = [
+{%- for product in collection.products -%}
+  {
+    "id": "{{ product.id }}",
+    "title": {{ product.title | json }},
+    "preorder": {{ product.metafields.custom.preorder_label.value | default: false | json }}
+  }{% unless forloop.last %},{% endunless %}
+{%- endfor -%}
+];
+</script> {% endcomment %}
+
+{% comment %} Code updated 12/06/2026 {% endcomment %}
+<script>
+window.productMetafields = [
+{%- for product in collection.products -%}
+  {
+    "id": "{{ product.id }}",
+    "title": {{ product.title | json }},
+    "preorder": {{ product.metafields.custom.preorder_label.value | default: false | json }},
+    "collections": [
+      {%- for c in product.collections -%}
+        "{{ c.handle }}" {% unless forloop.last %}, {% endunless %}
+      {%- endfor -%}
+    ]
+  }{% unless forloop.last %},{% endunless %}
+{%- endfor -%}
+];
+</script>
+
+<script>
+function addPreorderBadges() {
+  if (!window.productMetafields) return;
+
+  const rows = [];
+
+  document.querySelectorAll('.inner.product-item[data-product-id]').forEach(card => {
+    const rawId = card.getAttribute('data-product-id');
+    if (!rawId) return;
+
+    const productId = rawId.replace(/^product-/, '');
+
+    const data = window.productMetafields.find(p => String(p.id) === productId);
+
+    if (data) {
+      rows.push({
+        id: data.id,
+        name: data.title,
+        preorder_enabled: data.preorder
+      });
+
+      // Inject badge if not already injected
+      if (data.preorder && !card.querySelector('.preorder-badge-injected')) {
+        const badge = document.createElement('div');
+        badge.textContent = 'PRE-ORDER';
+        badge.className = 'preorder-badge-injected';
+        badge.style.cssText =
+          'position:absolute;top:0;right:0;z-index:3;pointer-events:none;' +
+          'padding:8px 12px !important;font-size:14px;font-weight:bold;' +
+          'color:#fff;line-height:1;border-radius:0;text-transform:uppercase;' +
+          'background:#22c55e;';
+        (card.querySelector('.product-image') || card).appendChild(badge);
+      }
+    }
+  });
+}
+
+// Run on initial page load
+document.addEventListener('DOMContentLoaded', addPreorderBadges);
+
+// Re-run after AJAX pagination (MutationObserver for dynamic load)
+const observer = new MutationObserver(() => {
+  setTimeout(addPreorderBadges, 500);
+});
+observer.observe(document.body, { childList: true, subtree: true });
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  // --- SINGLE PRODUCT PAGE ---
+  {% comment %} if (typeof product !== 'undefined' && product.type && product.type.toLowerCase() === 'parts') {
+    const badge = document.querySelector('.product-img-box .finance-badge');
+    if (badge) badge.remove();
+  } {% endcomment %}
+
+  if (typeof product !== 'undefined' && product.type && product.type.toLowerCase() === 'parts') {
+  const badge = document.querySelector('.product-img-box .finance-badge');
+  if (badge) badge.remove();
+}
+
+  // --- COLLECTION / GRID PAGES ---
+  {% comment %} if (window.productMetafields && Array.isArray(window.productMetafields)) {
+    document.querySelectorAll('.inner.product-item[data-product-id]').forEach(card => {
+      const rawId = card.getAttribute('data-product-id');
+      if (!rawId) return;
+      const productId = rawId.replace(/^product-/, '');
+      const data = window.productMetafields.find(p => String(p.id) === productId);
+      if (data && data.type && data.type.toLowerCase() === 'parts') {
+        const financeBadge = card.querySelector('.finance-badge');
+        if (financeBadge) financeBadge.remove();
+      }
+    });
+  } {% endcomment %}
+
+  if (window.productMetafields && Array.isArray(window.productMetafields)) {
+  document.querySelectorAll('.inner.product-item[data-product-id]').forEach(card => {
+    const rawId = card.getAttribute('data-product-id');
+    if (!rawId) return;
+    const productId = rawId.replace(/^product-/, '');
+    const data = window.productMetafields.find(p => String(p.id) === productId);
+
+    if (data && data.type && data.type.toLowerCase() === 'parts') {
+      const financeBadge = card.querySelector('.finance-badge');
+      if (financeBadge) financeBadge.remove();
+    }
+  });
+}
+});
+</script>
+{% comment %} Change parts/light collection pages image sizes {% endcomment %}
+{% comment %}  {% endcomment %}
+</body>
+</html>

@@ -1,0 +1,651 @@
+{% assign blocks = section.blocks | where: 'type', 'header' %}
+{% assign block = blocks[0] %}
+
+<header class="collection-header collection-header-sections {% if block.settings.collection_header_style == 'style_2' %}layout-header--style2{% endif %}">
+  <div class="relative {% if block.settings.collection_header_layout == 'default' %}container{% endif %}">
+
+    {% if block.settings.display_collection_image %}
+
+      {% if collection.description contains '<img' %}
+        {%- assign img_url = collection.description | split: '<img' | last | split: '>' | first -%}
+      {% elsif block.settings.collection_image != blank %}
+        {%- assign img_url = block.settings.collection_image | img_url: 'master' -%}
+      {% endif %}
+
+      <div class="collection-image">
+        {% if collection.description contains '<img' or block.settings.collection_image != blank %}
+          {% if collection.description contains '<img' %}
+            <img {{ img_url }} alt="{{ collection_title }}">
+          {% else %}
+            <img src="{{ img_url }}">
+          {% endif %}
+        {% endif %}
+
+        {% if block.settings.collection_header_style == 'style_1' %}
+          <div class="page-header tab-abs">
+            <div class="collection-header-title">
+              {% render 'multilang' with collection.title %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+    {% endif %}
+
+    {% assign trailer_collections = 'single-axles,tandem-axles,flat-deck,digger-trailer,hydraulic-trailers,food-trailers,ride-on-trailers,farm-trailers' | split: ',' %}
+
+    {% if trailer_collections contains collection.handle %}
+
+    {% capture trailer_items %}
+      <a href="/collections/single-axles" class="xtrailer-category-item">
+        <div class="xtrailer-category-thumb">
+          <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/IMG_1416.jpg?v=1767992085" alt="Single Axle">
+        </div>
+        <span>Single Axle</span>
+      </a>
+
+      <a href="/collections/tandem-axles" class="xtrailer-category-item">
+        <div class="xtrailer-category-thumb">
+          <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/Rectangle_16.png?v=1770609550" alt="Tandem Axle">
+        </div>
+        <span>Tandem Axle</span>
+      </a>
+
+      <a href="/collections/flat-deck" class="xtrailer-category-item">
+        <div class="xtrailer-category-thumb">
+          <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/Rectangle_19.png?v=1770609550" alt="Flat Deck">
+        </div>
+        <span>Flat Deck</span>
+      </a>
+
+      <a href="/collections/digger-trailer" class="xtrailer-category-item">
+        <div class="xtrailer-category-thumb">
+          <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/Rectangle_18.png?v=1770609550" alt="Digger Trailer">
+        </div>
+        <span>Digger</span>
+      </a>
+
+      <a href="/collections/hydraulic-trailers" class="xtrailer-category-item">
+        <div class="xtrailer-category-thumb">
+          <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/IMG_7760_1df8f97b-9bef-4518-a417-cd97496d2e56.jpg?v=1770609550" alt="Hydraulic Tipping">
+        </div>
+        <span>Hydraulic Tipping</span>
+      </a>
+
+      <a href="/collections/food-trailers" class="xtrailer-category-item">
+        <div class="xtrailer-category-thumb">
+          <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/big_food_trailer.jpg?v=1770609550" alt="Food Trailer">
+        </div>
+        <span>Food</span>
+      </a>
+
+      <a href="/collections/ride-on-trailers" class="xtrailer-category-item">
+        <div class="xtrailer-category-thumb">
+          <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/Rectangle_24.png?v=1770609550" alt="Ride On Trailer">
+        </div>
+        <span>Ride-on / Mower</span>
+      </a>
+
+      <a href="/collections/farm-trailers" class="xtrailer-category-item">
+        <div class="xtrailer-category-thumb">
+          <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/5x3_2.jpg?v=1770609550" alt="Farm Trailer">
+        </div>
+        <span>Tradesman/Farm</span>
+      </a>
+    {% endcapture %}
+
+<div class="xtrailer-category-carousel">
+  <div class="xtrailer-category-track">
+    <div class="xtrailer-category-list">
+      {{ trailer_items }}
+    </div>
+
+    <div class="xtrailer-category-list" aria-hidden="true">
+      {{ trailer_items }}
+    </div>
+  </div>
+</div>
+
+{% endif %}
+
+    <div class="collection-wrapper page-header">
+      <div class="container">
+
+        {% if collection.handle == 'single-axles' %}
+
+          <h1>Single Axle Trailers</h1>
+
+          <div class="custom-collection-top-content">
+            <p>
+              Built for Kiwi homeowners, lifestyle blocks, tradies and small businesses, our single axle trailers are designed for everyday hauling across New Zealand. Browse our range of galvanised single axle trailers available in multiple sizes and configurations, offering reliable performance, easy towing and excellent value.
+            </p>
+          </div>
+
+        {% elsif collection.handle == 'tandem-axles' %}
+
+          <h1>Tandem-Axle Trailers</h1>
+
+          <div class="custom-collection-top-content">
+            <p>
+              Heavy-duty tandem axle trailers built for larger loads, greater stability and demanding jobs. Explore our range of tandem axle trailers designed for New Zealand roads, farms, worksites and commercial applications.
+            </p>
+          </div>
+
+        {% else %}
+
+          <h1>
+            {% render 'multilang' with collection.title %}
+          </h1>
+
+      {% endif %}
+        
+      {% if collection.handle == 'best-seller-trailers' %}
+        <div class="heavy-duty-collection-list">
+ 
+          <a href="/collections/single-axles" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/IMG_1416.jpg?v=1767992085">
+            </div>
+            <span>Single Axle </span>
+          </a>
+
+          <a href="/collections/tandem-axles" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/Rectangle_16.png?v=1770609550">
+            </div>
+            <span>Tandem Axle</span>
+          </a>
+
+           <a href="/collections/flat-deck" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/Rectangle_19.png?v=1770609550">
+            </div>
+            <span>Flat Deck </span>
+          </a>
+
+          <a href="/collections/digger-trailer" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/Rectangle_18.png?v=1770609550">
+            </div>
+            <span>Digger </span>
+          </a>
+
+          <a href="/collections/hydraulic-trailers" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/IMG_7760_1df8f97b-9bef-4518-a417-cd97496d2e56.jpg?v=1770609550">
+            </div>
+            <span>Hydraulic Tipping </span>
+          </a>
+
+          <a href="/collections/food-trailers" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/big_food_trailer.jpg?v=1770609550">
+            </div>
+            <span>Food </span>
+          </a>
+
+          <a href="/collections/ride-on-trailers" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/Rectangle_24.png?v=1770609550">
+            </div>
+            <span>Ride-on/ Mower </span>
+          </a>
+
+           <a href="/collections/farm-trailers" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/5x3_2.jpg?v=1770609550">
+            </div>
+            <span>Tradesman/Farm </span>
+          </a>
+
+        </div>
+        {% endif %}
+        
+
+        {% assign parts_collections = 'trailer-parts,axles,body-chassis-metal-fab,brakes,bolts,couplings,diy-trailer-kits,hubs,springs,jockey-wheels,lighting-electrical,trailer-ramps,trailer-security,wheels-1,trailer-covers' | split: ',' %}
+
+        {% if parts_collections contains collection.handle %}
+      <div class="parts-collection-carousel">
+        <div class="parts-collection-list">
+ 
+           <a href="/collections/axles" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/Hydraulic_Disc_Brake_Axle.jpg?v=1778537363">
+           </div>
+              <span>Axles</span>
+          </a>
+
+          <a href="/collections/body-chassis-metal-fab" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/1201340_A2_b38df218-217b-46da-bc78-40e990a4e21b.webp?v=1779756021">
+            </div>
+            <span>Body, Chassis <br> & Metal Fab</span>
+          </a>
+
+           <a href="/collections/brakes" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/3818321826282794090_1.jpg?v=1716774798">
+            </div>
+            <span>Brakes</span>
+          </a>
+
+          <a href="/collections/bolts" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/m12-x-130mm-bag-5-5htb12130.png?v=1779777140">
+            </div>
+            <span>Bolts </span>
+          </a>
+
+          <a href="/collections/couplings" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/ALKO_Coupling_-_Over_Ride_-_1_78in_2500KG_-_Body_Only_395_4748.png?v=1778798428">
+            </div>
+            <span>Couplings</span>
+          </a>
+
+          <a href="/collections/diy-trailer-kits" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/big_food_trailer.jpg?v=1770609550">
+            </div>
+            <span>DIY Trailer Kits </span>
+          </a>
+
+          <a href="/collections/hubs" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/BEARING.png?v=1779672409">
+            </div>
+            <span>Hubs/Bearings</span>
+          </a>
+
+          <a href="/collections/jockey-wheels" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/ALKO_Jockey_Wheel_Only_-_200mm_Steel__solid_rubber_tyre_794_2237.png?v=1779781805">
+            </div>
+            <span>Jokey Wheels <br> & Stands</span>
+          </a>
+
+          <a href="/collections/lighting-electrical" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/s-l1600346n457n65_S6AVG5NROFI1_1024x1024_2c97214b-1183-420c-8517-e67933509920.webp?v=1779927193">
+            </div>
+            <span>Lighting <br> & Electrical</span>
+          </a>
+
+           <a href="/collections/springs" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/31Yr2luYTML.jpg?v=1779493865">
+            </div>
+            <span>Springs</span>
+          </a>
+
+          <a href="/collections//trailer-ramps" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/IMG_2309_28fbc560-d99d-4286-b6c1-4589102ed276.jpg?v=1779936386">
+            </div>
+            <span>Ramps/Cages </span>
+          </a>
+          <a href="/collections/trailer-security" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/couplinglock2.jpg?v=1779144014">
+            </div>
+            <span>Trailer Security</span>
+          </a>
+
+          <a href="/collections/wheels-1" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/Wheel_Galvanised_14x_6_-_Tyre_185R14C_5278.jpg?v=1740621124">
+            </div>
+            <span>Wheels & Tyres </span>
+          </a>
+
+          <a href="/collections/trailer-covers" class="heavy-duty-collection-item">
+            <div class="heavy-duty-collection-thumb">
+              <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/IMG_8240.jpg?v=1724395146">
+            </div>
+            <span>Trailer Covers </span>
+          </a>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+</header>
+
+<style>
+  {% if block.settings.display_collection_image %} 
+  @media (min-width: 768px) {
+    .collection-header-sections .page-header h1 {
+      color: {{ block.settings.color_wrapper }};
+    }
+    .collection-header-sections .collection-static.page-header h1 {
+      color: #000;
+    }
+  }
+  {% endif %}
+  
+  @media (min-width: 1200px) {
+    .collection-header-sections .collection-image img {
+      height: {{ block.settings.height_img }};
+    }
+
+    {% if block.settings.display_collection_image %} 
+    .collection-header.collection-header-sections {
+      position: relative;
+    }
+
+    {% if block.settings.collection_header_style == 'style_1' %}
+      .collection-header.collection-header-sections .collection-wrapper:not(.collection-static) {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -moz-transform: translate(-50%, -50%);
+        -o-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        text-align: center;
+        width: 100%;
+        max-width: 500px;
+        margin: 0;
+      }
+      {% if settings.layout_style == 'layout_style_fullwidth' %}
+        .collection-header.collection-header-sections .collection-wrapper:not(.collection-static) {
+            bottom: 55px;
+            top: auto;
+            transform: translate(-50%, 0);
+        }
+      {% endif %}
+    {% else %}
+      .layout-header--style2 .container .absolute {
+        background-color: {{ block.settings.bg_color_content }};
+      }
+      .layout-header--style2 .container .absolute:before {
+        border-color: {{ block.settings.border_color_content }};
+      }
+      .layout-header--style2 .container .absolute .collection-des a {
+        color: {{ block.settings.color_wrapper }};
+      }
+    {% endif %}
+    
+    .collection-header.collection-header-sections .collection-static {
+      position: static;
+      width: 100%;
+      max-width: 500px;
+      margin: 30px auto 0;
+      text-align: center;
+    }
+    
+    .collection-header.collection-header-sections .collection-image {
+      margin-bottom: 1px;
+    }
+    
+    {% else %}
+    .collection-template .reverse-mb {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: -moz-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-flex-direction: column-reverse;
+      -moz-flex-direction: column-reverse;
+      -ms-flex-direction: column-reverse;
+      flex-direction: column-reverse;
+    }    
+    {% endif %}
+  }
+
+.heavy-duty-collection-list{
+  display:grid;
+  grid-template-columns:repeat(8, minmax(0, 1fr));
+  column-gap:30px;
+  row-gap:26px;
+  align-items:start;
+  margin:20px 0 35px;
+}
+
+.heavy-duty-collection-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  min-width:0;
+  text-align:center;
+  text-decoration:none !important;
+}
+
+.heavy-duty-collection-thumb{
+  width:100%;
+  max-width:200px;
+  aspect-ratio:1 / 1;
+  border:1px solid #d9d9d9;
+  border-radius:12px;
+  overflow:hidden;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:0px;
+  margin:0 auto;
+  transition:all .3s ease;
+}
+
+.heavy-duty-collection-thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.heavy-duty-collection-item span{
+  display:block;
+  width:100%;
+  margin-top:10px;
+  font-size:14px;
+  line-height:1.35;
+  font-weight:600;
+  color:#222 !important;
+  text-align:center;
+  white-space:normal;
+  word-break:break-word;
+  overflow-wrap:break-word;
+
+}
+
+.heavy-duty-collection-item:hover .heavy-duty-collection-thumb{
+  border-color:#f5a623;
+  transform:translateY(-2px);
+}
+
+.heavy-duty-collection-item:hover span{
+  color:#f5a623 !important;
+}
+
+/* tablet = 2 lines */
+@media (max-width: 1024px){
+  .heavy-duty-collection-list{
+    grid-template-columns:repeat(4, minmax(0, 1fr));
+    column-gap:18px;
+    row-gap:24px;
+  }
+
+  .heavy-duty-collection-thumb{
+    max-width:88px;
+  }
+
+  .heavy-duty-collection-item span{
+    font-size:14px;
+  }
+}
+
+/* Horizontal carousel container */
+.parts-collection-carousel {
+  overflow: hidden; /* hide scrollbar completely */
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 0;
+  position: relative;
+}
+
+/* Hide scrollbar for Webkit browsers */
+.parts-collection-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.parts-collection-list {
+  display: flex;
+  gap: 25px;
+}
+
+.parts-collection-list .heavy-duty-collection-item {
+  flex: 0 0 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Image size 80x80 */
+.parts-collection-list .heavy-duty-collection-thumb {
+  width: 80px;
+  height: 80px;
+  max-width: 80px;
+  max-height: 80px;
+  border-radius: 6px;
+  padding: 0;
+  margin-bottom: 5px;
+}
+
+.parts-collection-list .heavy-duty-collection-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Titles smaller and wrapped */
+.parts-collection-list .heavy-duty-collection-item span {
+  font-size: 12px;
+  text-align: center;
+  display: block;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.2;
+}
+
+{% comment %} trialer sub category carousel {% endcomment %}
+.xtrailer-category-carousel {
+  width: 100%;
+  overflow: hidden;
+  padding: 18px 0 14px;
+  position: relative;
+}
+
+.xtrailer-category-track {
+  display: flex;
+  width: max-content;
+  animation: xtrailerAutoScroll 26s linear infinite;
+}
+
+.xtrailer-category-list {
+  display: flex;
+  gap: 32px;
+  padding-right: 32px;
+  flex-shrink: 0;
+}
+
+.xtrailer-category-item {
+  width: 115px;
+  min-width: 115px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+}
+
+.xtrailer-category-thumb {
+  width: 105px;
+  height: 105px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  background: #f5f5f5;
+}
+
+.xtrailer-category-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.xtrailer-category-item span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+@keyframes xtrailerAutoScroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .xtrailer-category-list {
+    gap: 22px;
+    padding-right: 22px;
+  }
+
+  .xtrailer-category-item {
+    width: 95px;
+    min-width: 95px;
+  }
+
+  .xtrailer-category-thumb {
+    width: 88px;
+    height: 88px;
+  }
+
+  .xtrailer-category-item span {
+    font-size: 12px;
+  }
+}
+
+
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const carousel = document.querySelector('.parts-collection-carousel');
+  const list = document.querySelector('.parts-collection-list');
+  if (!carousel || !list) return;
+
+  // Clone all items for seamless scroll
+  const items = Array.from(list.children);
+  items.forEach(item => {
+    const clone = item.cloneNode(true);
+    list.appendChild(clone);
+  });
+
+  let scrollAmount = 0;
+  const scrollStep = 1; // pixels per interval
+  const scrollDelay = 20; // ms
+
+  function autoScroll() {
+    scrollAmount += scrollStep;
+    if(scrollAmount >= list.scrollWidth / 2) scrollAmount = 0; // reset at halfway
+    carousel.scrollLeft = scrollAmount;
+    requestAnimationFrame(autoScroll);
+  }
+
+  requestAnimationFrame(autoScroll);
+});
+</script>

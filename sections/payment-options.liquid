@@ -1,0 +1,194 @@
+{% schema %}
+{
+  "name": "Payment Options",
+  "settings": [
+    { "type": "range", "id": "columns_desktop", "label": "Cards per row (desktop)", "min": 1, "max": 4, "step": 1, "default": 2 },
+    { "type": "range", "id": "gap", "label": "Gap between cards (px)", "min": 0, "max": 64, "step": 4, "default": 24 },
+    { "type": "range", "id": "padding", "label": "Card padding (px)", "min": 0, "max": 64, "step": 4, "default": 48 },
+    { "type": "range", "id": "icon_size", "label": "Icon size (px)", "min": 24, "max": 128, "step": 4, "default": 64 },
+    { "type": "range", "id": "section_padding", "label": "Section vertical padding (px)", "min": 0, "max": 128, "step": 8, "default": 64 },
+    { "type": "color", "id": "bg_color", "label": "Card background color", "default": "#ffffff" },
+    { "type": "color", "id": "text_color", "label": "Card text color", "default": "#000000" },
+    { "type": "color", "id": "hover_text_color", "label": "Hover text color", "default": "#ffffff" },
+    { "type": "color", "id": "border_color", "label": "Default border color", "default": "#000000" }
+   
+
+  ],
+  "blocks": [
+    {
+      "type": "payment_card",
+      "name": "Payment Card",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title" },
+        { "type": "textarea", "id": "description", "label": "Description" },
+        { "type": "text", "id": "extra_text", "label": "Extra Text" },
+        { "type": "image_picker", "id": "icon", "label": "Icon" },
+        { "type": "text", "id": "button_text", "label": "Button Text", "default": "Select" },
+        { "type": "url", "id": "button_link", "label": "Button Link" },
+        { "type": "color", "id": "hover_bg_color", "label": "Hover background color", "default": "#000000" },
+        { "type": "color", "id": "hover_border_color", "label": "Hover border color", "default": "#000000" },
+         { "type": "checkbox", "id": "show_button", "label": "Show Button", "default": true }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Payment Options",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+.payment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  grid-auto-rows: 1fr; /* Ensures equal height rows */
+  gap: var(--gap, 24px); /* fallback gap */
+}
+
+@media screen and (max-width: 768px) {
+  .payment-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.payment-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  border: 2px solid;
+  border-radius: 0 !important;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.payment-card:hover {
+  transform: scale(1.02); /* subtle hover lift */
+}
+
+.payment-card .card-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  padding: var(--padding, 48px); /* fallback padding */
+  background-color: var(--bg-color, #ffffff);
+  color: var(--text-color, #000000);
+}
+
+.payment-card .card-icon {
+  width: var(--icon-size, 64px);
+  height: var(--icon-size, 64px);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.payment-card .card-icon img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.payment-card h3 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.payment-card p {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  flex-grow: 1;
+}
+
+.payment-card .card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+.payment-card .card-footer a {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--text-color, #000000);
+  color: var(--bg-color, #ffffff);
+}
+
+</style>
+
+<section
+  class="payment-options"
+  style="padding-top: {{ section.settings.section_padding }}px; padding-bottom: {{ section.settings.section_padding }}px;"
+>
+  <div class="container">
+    <div
+      class="payment-grid"
+      style="grid-template-columns: repeat({{ section.settings.columns_desktop }}, minmax(0, 1fr)); gap: {{ section.settings.gap }}px;"
+    >
+      {% for block in section.blocks %}
+        <div
+          class="payment-card"
+          style="border-color: {{ section.settings.border_color }};"
+          onmouseover="
+            this.querySelector('.card-body').style.backgroundColor='{{ block.settings.hover_bg_color }}';
+            this.style.borderColor='{{ block.settings.hover_border_color }}';
+            this.querySelector('.card-body').style.color='{{ section.settings.hover_text_color }}';
+          "
+          onmouseout="
+            this.querySelector('.card-body').style.backgroundColor='{{ section.settings.bg_color }}';
+            this.style.borderColor='{{ section.settings.border_color }}';
+            this.querySelector('.card-body').style.color='{{ section.settings.text_color }}';
+          "
+        >
+          <div
+            class="card-body"
+            style="
+              background-color: {{ section.settings.bg_color }};
+              color: {{ section.settings.text_color }};
+              padding: {{ section.settings.padding }}px;
+            "
+          >
+            <div
+              class="card-icon"
+              style="width: {{ section.settings.icon_size }}px; height: {{ section.settings.icon_size }}px; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center;"
+            >
+              <img src="{{ block.settings.icon | img_url: '100x' }}" alt="{{ block.settings.title }}">
+            </div>
+            <h3>{{ block.settings.title }}</h3>
+            <p>{{ block.settings.description }}</p>
+            <div class="card-footer">
+  {% if block.settings.extra_text %}
+    <span>{{ block.settings.extra_text }}</span>
+  {% endif %}
+  {% if block.settings.show_button %}
+    <a
+      href="{{ block.settings.button_link }}"
+      style="
+        background-color: {{ section.settings.text_color }};
+        color: {{ section.settings.bg_color }};
+      "
+    >
+      {{ block.settings.button_text }}
+    </a>
+  {% endif %}
+</div>
+
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

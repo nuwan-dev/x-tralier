@@ -1,0 +1,125 @@
+{% schema %}
+{
+  "name": "Trailer Promo",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "promo_image",
+      "label": "Promo Image"
+    },
+    {
+  "type": "range",
+  "id": "image_height",
+  "label": "Image Height (px)",
+  "min": 100,
+  "max": 800,
+  "step": 10,
+  "default": 400
+},
+
+    {
+      "type": "checkbox",
+      "id": "full_width_toggle",
+      "label": "Enable Full Width",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Built to Haul. Ready to Roll."
+    },
+    {
+      "type": "textarea",
+      "id": "subheadline",
+      "label": "Subheadline",
+      "default": "Finance your trailer today — personal or business, we’ve got flexible options to get you moving."
+    },
+    {
+      "type": "range",
+      "id": "vertical_padding",
+      "label": "Section vertical padding",
+      "min": 0,
+      "max": 128,
+      "step": 8,
+      "default": 64
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading text color",
+      "default": "#111"
+    },
+    {
+      "type": "color",
+      "id": "paragraph_color",
+      "label": "Paragraph text color",
+      "default": "#444"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trailer Promo",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="trailer-promo {% if section.settings.full_width_toggle %}trailer-promo--full{% endif %}">
+  <style>
+    .trailer-promo {
+      text-align: center;
+      padding: {{ section.settings.vertical_padding }}px 20px;
+      background-color: {{ section.settings.bg_color }};
+      font-family: sans-serif;
+      max-width: 1370px;
+      margin: 0 auto;
+    }
+    .trailer-promo--full {
+      max-width: 100%;
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .trailer-promo img {
+      width: 100%;
+      height: {{ section.settings.image_height }}px;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 2rem;
+    }
+    .trailer-promo h2 {
+      font-family: "Poppins", sans-serif;
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: {{ section.settings.heading_color }};
+    }
+    .trailer-promo p {
+      font-family: "Poppins", sans-serif;
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 700px;
+      margin: 0 auto;
+      color: {{ section.settings.paragraph_color }};
+    }
+  </style>
+
+  {% if section.settings.promo_image %}
+    <img
+  src="{{ section.settings.promo_image | img_url: '1600x' }}"
+  alt="Trailer promo image"
+  style="height: {{ section.settings.image_height }}px;"
+>
+
+  {% endif %}
+
+  <h2>{{ section.settings.headline }}</h2>
+  <p>{{ section.settings.subheadline }}</p>
+</div>

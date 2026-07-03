@@ -1,0 +1,136 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+<style>
+  .payments-stack-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: -20px 0px 16px 0px;
+  }
+
+  .payments-banner {
+    display: flex;
+    align-items: center;
+    background-color: #f9f9f9;
+    border: 1px solid #dcdcdc;
+    border-radius: 0;
+    padding: 10px 16px;
+    margin: 0;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .payments-banner img {
+    flex-shrink: 0;
+    width: 45px;
+    height: 28px;
+    object-fit: contain;
+    margin-right: 16px;
+  }
+
+  .payments-banner-content {
+    flex: 1;
+  }
+
+  .payments-banner-content p {
+    color: #333;
+    font-size: 12px;
+    line-height: 18px;
+    margin: 0 0 0px;
+  }
+
+  .payments-banner-content strong {
+    color: #111;
+    font-weight: 600;
+  }
+
+  /* 🎨 Branded Hover Styles */
+  .gem-payments-banner:hover {
+    background-color: #e6f0ff;
+    border-color: #0074c8;
+  }
+
+  .afterpay-payments-banner:hover {
+    background-color: #eafaf5;
+    border-color: #00bfa5;
+  }
+
+ .zip-payments-banner:hover {
+  background-color: #f9f5ff;
+  border-color: #AA8FFF;   
+}
+
+.mtf-payments-banner:hover {
+  background-color: #fffbe6; 
+  border-color: #F5C716;    
+
+/* .gem-payments-banner {
+    background-color: #e6f0ff;
+    border-color: #0074c8;
+  }
+
+  .afterpay-payments-banner {
+    background-color: #eafaf5;
+    border-color: #00bfa5;
+  }
+
+ .zip-payments-banner {
+  background-color: #f9f5ff;
+  border-color: #AA8FFF;   
+}
+
+.mtf-payments-banner {
+  background-color: #fffbe6; 
+  border-color: #F5C716; 
+  
+} */
+
+</style>
+
+<div class="payments-stack-container">
+  {% comment %} <!-- Gem by Latitude -->
+  <div class="gem-payments-banner payments-banner">
+    <img src="https://cdn.shopify.com/s/files/1/0280/1598/4674/files/Gem-By-Latitude-Logo-Blue-RGB.webp?v=1727806200" alt="Gem by Latitude">
+    <div class="payments-banner-content">
+      <p>6 months interest-free from <strong><span class="mtf-monthly">{{ current_variant.price | divided_by: 6 | money }}</span></strong> per month*</p>
+      <p>12 months interest-free from <strong><span class="mtf-monthly">{{ current_variant.price | divided_by: 12 | money }}</span></strong> per month*</p>
+    </div>
+  </div> {% endcomment %}
+
+  <!-- Afterpay -->
+  <div class="afterpay-payments-banner payments-banner">
+    <img src="https://cdn.shopify.com/s/files/1/0280/1598/4674/files/Afterpay_Badge_BlackonMint.png?v=1727848632" alt="Afterpay">
+    <div class="payments-banner-content">
+      <p>Four payments of <strong><span class="mtf-monthly">{{ current_variant.price | divided_by: 4 | money }}</span></strong> per fortnight*</p>
+    </div>
+  </div>
+
+  <!-- Zip -->
+  <!-- Zip -->
+<div class="zip-payments-banner payments-banner">
+  <img src="https://assets.partpay.co.nz/assets/Images/zip-black.svg" alt="Zip">
+  <div class="payments-banner-content">
+    <p>Zip lets you pay 25% upfront, with the rest split over three fortnightly interest-free payments.</p>
+  </div>
+</div>
+
+
+  <!-- MTF Finance -->
+  <div class="mtf-payments-banner payments-banner">
+    <img src="https://cdn.shopify.com/s/files/1/0541/9538/8609/files/MTF_Finance_Compact_Blue_Logo.svg?v=1776695190" alt="MTF Finance">
+    <div class="payments-banner-content">
+      <p>
+  MTF Finance, Up to 60 Months Available — apply online and get up to <strong>{{ current_variant.price | money }}</strong> financed with flexible terms up to <strong>60 months</strong>.*
+</p>
+<p>
+  Example: 60-month term from <strong><span class="mtf-monthly">{{ current_variant.price | divided_by: 60 | money }} </span></strong> per month <a href="https://apply.mtf.co.nz/welcome?rp_source=Public+Website&originatorid=2317&_gl=1*xl617t*_gcl_au*MTg3MDAxMDMxNi4xNzYwNDgyNzgz*FPAU*MTg3MDAxMDMxNi4xNzYwNDgyNzgz*_ga*MTAzNjk0OTI5Mi4xNDY1ODY5MjIy*_ga_WGWS2HCGTF*czE3NjYxMDk3MTQkbzEzOCRnMSR0MTc2NjEwOTcyOSRqNDUkbDAkaDA.*_fplc*NzFkN0JjeWc5eDRwSGV3c1F2ZFBIdVlibk9zaCUyRnU3aklJQUlqdWNWcmpZQktQbENEeERDJTJGWVglMkZHNEFBbkVFbHlpaldPODl6Q1EyRFVZZmdiJTJCUHA0RThvY1lLZGkzQkJtbHVwTzhuNFcycmJzajglM0Q." 
+   target="_blank" 
+   rel="noopener">
+  <span style="display: inline-block; padding: 0px 0px; color:#F58223; font-weight: 600; cursor: pointer;">
+    Apply Now
+  </span>
+</a>.
+</p>
+
+    </div>
+  </div>
+</div>

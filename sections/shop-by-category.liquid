@@ -1,0 +1,714 @@
+{% assign ai_gen_id = section.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-carousel-container-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+    position: relative;
+    padding: 40px 20px;
+    user-select: none;
+  }
+
+  .ai-carousel-header-{{ ai_gen_id }} {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .ai-carousel-heading-{{ ai_gen_id }} {
+    font-family: {{ section.settings.heading_font.family }}, {{ section.settings.heading_font.fallback_families }};
+    font-weight: {{ section.settings.heading_font.weight }};
+    font-size: {{ section.settings.heading_size }}px;
+    color: {{ section.settings.heading_color }};
+    margin: 0;
+    line-height: 1.2;
+    text-transform: {{ section.settings.heading_text_transform }};
+  }
+
+  /* Track Wrapper */
+  .ai-carousel-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Scrollable Track */
+  .ai-carousel-track-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ section.settings.gap }}px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 20px;
+    margin-bottom: -20px;
+    cursor: grab;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .ai-carousel-track-{{ ai_gen_id }}::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ai-carousel-track-{{ ai_gen_id }}.is-grabbing {
+    cursor: grabbing;
+    scroll-behavior: auto; /* Instant movement while dragging */
+  }
+
+  /* Items */
+  .ai-carousel-item-{{ ai_gen_id }} {
+    flex: 0 0 calc((100% - ({{ section.settings.items_per_row_desktop | minus: 1 }} * {{ section.settings.gap }}px)) / {{ section.settings.items_per_row_desktop }});
+    min-width: 0;
+    text-decoration: none;
+    display: block;
+    position: relative;
+  }
+
+  .ai-carousel-track-{{ ai_gen_id }}.is-dragging .ai-carousel-item-{{ ai_gen_id }} {
+    pointer-events: none;
+  }
+
+  @media (hover: hover) {
+    .ai-carousel-item-{{ ai_gen_id }}:hover {
+      transform: translateY(-5px);
+      transition: transform 0.3s ease;
+    }
+  }
+
+  .ai-carousel-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    padding-bottom: {{ section.settings.image_aspect_ratio }}%;
+    overflow: hidden;
+    background-color: #f4f4f4;
+    border-radius: {{ section.settings.image_border_radius }}px;
+    pointer-events: none;
+  }
+
+  .ai-carousel-image-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-carousel-image-placeholder-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+  }
+
+  .ai-carousel-image-placeholder-{{ ai_gen_id }} svg {
+    width: 50%;
+    height: 50%;
+    opacity: 0.3;
+  }
+
+  .ai-carousel-content-{{ ai_gen_id }} {
+    padding: {{ section.settings.content_padding }}px 0 0 0;
+  }
+
+  .ai-carousel-title-{{ ai_gen_id }} {
+    font-family: {{ section.settings.title_font.family }}, {{ section.settings.title_font.fallback_families }};
+    font-weight: {{ section.settings.title_font.weight }};
+    font-size: {{ section.settings.title_size }}px;
+    color: {{ section.settings.title_color }};
+    margin: 0 0 10px 0;
+    line-height: 1.3;
+  }
+
+  .ai-carousel-description-{{ ai_gen_id }} {
+    font-family: {{ section.settings.description_font.family }}, {{ section.settings.description_font.fallback_families }};
+    font-weight: {{ section.settings.description_font.weight }};
+    font-size: {{ section.settings.description_size }}px;
+    color: {{ section.settings.description_color }};
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* Progress Bar */
+  .ai-carousel-progress-container-{{ ai_gen_id }} {
+    margin-top: 30px;
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .ai-carousel-progress-bar-{{ ai_gen_id }} {
+    width: 100%;
+    max-width: {{ section.settings.progress_width | default: 300 }}px;
+    height: {{ section.settings.progress_height }}px;
+    background-color: {{ section.settings.progress_background_color }};
+    border-radius: {{ section.settings.progress_border_radius }}px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    touch-action: none;
+  }
+
+  .ai-carousel-progress-fill-{{ ai_gen_id }} {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: {{ section.settings.progress_fill_color }};
+    border-radius: {{ section.settings.progress_border_radius }}px;
+    width: 0%;
+    transition: width 0.1s linear, left 0.1s linear;
+    pointer-events: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-carousel-container-{{ ai_gen_id }} { padding: 30px 15px; }
+    .ai-carousel-item-{{ ai_gen_id }} { flex: 0 0 calc((100% - ({{ section.settings.items_per_row_mobile | minus: 1 }} * {{ section.settings.gap }}px)) / {{ section.settings.items_per_row_mobile }}); }
+    .ai-carousel-heading-{{ ai_gen_id }} { font-size: {{ section.settings.heading_size | times: 0.7 }}px; }
+    .ai-carousel-title-{{ ai_gen_id }} { font-size: {{ section.settings.title_size | times: 0.85 }}px; }
+    .ai-carousel-description-{{ ai_gen_id }} { font-size: {{ section.settings.description_size | times: 0.9 }}px; }
+    .ai-carousel-content-{{ ai_gen_id }} { padding: {{ section.settings.content_padding | times: 0.75 }}px 0 0 0; }
+    .ai-carousel-progress-container-{{ ai_gen_id }} { margin-top: 20px; padding: 0 10px; }
+    .ai-carousel-progress-bar-{{ ai_gen_id }} { max-width: 100%; }
+  }
+{% endstyle %}
+
+<div class="ai-carousel-container-{{ ai_gen_id }}" {{ section.shopify_attributes }}>
+  {% if section.settings.heading != blank %}
+    <div class="ai-carousel-header-{{ ai_gen_id }}">
+      <h2 class="ai-carousel-heading-{{ ai_gen_id }}">{{ section.settings.heading }}</h2>
+    </div>
+  {% endif %}
+
+  <div class="ai-carousel-wrapper-{{ ai_gen_id }}">
+    <div class="ai-carousel-track-{{ ai_gen_id }}" data-carousel-track>
+      {% for block in section.blocks %}
+        {% if block.settings.link != blank %}
+          <a href="{{ block.settings.link }}" class="ai-carousel-item-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+        {% else %}
+          <div class="ai-carousel-item-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+        {% endif %}
+          
+          <div class="ai-carousel-image-wrapper-{{ ai_gen_id }}">
+            {% if block.settings.image %}
+              <img
+                src="{{ block.settings.image | image_url: width: 800 }}"
+                alt="{{ block.settings.image.alt | escape }}"
+                loading="lazy"
+                class="ai-carousel-image-{{ ai_gen_id }}"
+                width="800"
+                height="{{ 800 | times: section.settings.image_aspect_ratio | divided_by: 100 }}"
+              >
+            {% else %}
+              <div class="ai-carousel-image-placeholder-{{ ai_gen_id }}">
+                {{ 'image' | placeholder_svg_tag }}
+              </div>
+            {% endif %}
+          </div>
+          
+          <div class="ai-carousel-content-{{ ai_gen_id }}">
+            {% if block.settings.title != blank %}
+              <h3 class="ai-carousel-title-{{ ai_gen_id }}">{{ block.settings.title }}</h3>
+            {% endif %}
+            {% if block.settings.description != blank %}
+              <p class="ai-carousel-description-{{ ai_gen_id }}">{{ block.settings.description }}</p>
+            {% endif %}
+          </div>
+
+        {% if block.settings.link != blank %}
+          </a>
+        {% else %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="ai-carousel-progress-container-{{ ai_gen_id }}">
+    <div class="ai-carousel-progress-bar-{{ ai_gen_id }}" data-progress-track>
+      <div class="ai-carousel-progress-fill-{{ ai_gen_id }}" data-carousel-progress></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    function initCarousel(container) {
+      if (!container) return;
+
+      const track = container.querySelector('[data-carousel-track]');
+      const progressTrack = container.querySelector('[data-progress-track]');
+      const progressFill = container.querySelector('[data-carousel-progress]');
+      
+      if (!track || !progressTrack || !progressFill) return;
+
+      // Settings from Schema
+      const autoplayEnabled = {{ section.settings.autoplay_enabled | default: false }};
+      const autoplayIntervalMs = {{ section.settings.autoplay_interval | default: 4 }} * 1000;
+      let autoPlayTimer = null;
+
+      let isDown = false;
+      let startX;
+      let scrollLeft;
+      let isDragging = false;
+
+      // --- 1. Autoplay Logic ---
+      function startAutoplay() {
+        if (!autoplayEnabled) return;
+        stopAutoplay(); // Clear existing
+        autoPlayTimer = setInterval(slideNext, autoplayIntervalMs);
+      }
+
+      function stopAutoplay() {
+        if (autoPlayTimer) {
+          clearInterval(autoPlayTimer);
+          autoPlayTimer = null;
+        }
+      }
+
+      function slideNext() {
+        // Calculate scroll amount (width of one item + gap)
+        const item = track.firstElementChild;
+        if(!item) return;
+        
+        const itemWidth = item.offsetWidth;
+        const gap = {{ section.settings.gap }};
+        const scrollAmount = itemWidth + gap;
+        const maxScroll = track.scrollWidth - track.clientWidth;
+
+        // Check if we are at the end (allow small buffer)
+        if (track.scrollLeft >= maxScroll - 10) {
+          track.scrollTo({ left: 0, behavior: 'smooth' }); // Loop back to start
+        } else {
+          track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+      }
+
+      // --- 2. Mouse Drag Logic (Carousel) ---
+      track.addEventListener('mousedown', (e) => {
+        isDown = true;
+        stopAutoplay(); // Pause on interaction
+        track.classList.add('is-grabbing');
+        startX = e.pageX - track.offsetLeft;
+        scrollLeft = track.scrollLeft;
+        isDragging = false;
+      });
+
+      track.addEventListener('mouseleave', () => {
+        isDown = false;
+        track.classList.remove('is-grabbing');
+        setTimeout(() => track.classList.remove('is-dragging'), 50);
+        startAutoplay(); // Resume
+      });
+
+      track.addEventListener('mouseup', () => {
+        isDown = false;
+        track.classList.remove('is-grabbing');
+        if (isDragging) {
+          setTimeout(() => {
+            track.classList.remove('is-dragging');
+            isDragging = false;
+          }, 50);
+        }
+        startAutoplay(); // Resume
+      });
+
+      track.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - track.offsetLeft;
+        const walk = (x - startX) * 2;
+        if (Math.abs(walk) > 5) {
+          isDragging = true;
+          track.classList.add('is-dragging');
+        }
+        track.scrollLeft = scrollLeft - walk;
+      });
+
+      // --- 3. Progress Bar Drag Logic ---
+      let isBarDown = false;
+
+      function handleBarDrag(e) {
+        if (!isBarDown) return;
+        stopAutoplay(); // Pause
+        e.preventDefault();
+
+        const rect = progressTrack.getBoundingClientRect();
+        let clientX = e.clientX;
+        if (e.touches && e.touches.length > 0) clientX = e.touches[0].clientX;
+
+        const x = clientX - rect.left;
+        let percent = x / rect.width;
+        percent = Math.max(0, Math.min(1, percent));
+
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        track.scrollLeft = maxScroll * percent;
+      }
+
+      progressTrack.addEventListener('mousedown', (e) => {
+        isBarDown = true;
+        handleBarDrag(e);
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if(isBarDown) handleBarDrag(e);
+      });
+
+      window.addEventListener('mouseup', () => {
+        if(isBarDown) {
+          isBarDown = false;
+          startAutoplay(); // Resume
+        }
+      });
+
+      // Touch Events for Bar
+      progressTrack.addEventListener('touchstart', (e) => {
+        isBarDown = true;
+        handleBarDrag(e);
+      }, { passive: false });
+
+      window.addEventListener('touchmove', (e) => {
+        if(isBarDown) handleBarDrag(e);
+      }, { passive: false });
+
+      window.addEventListener('touchend', () => {
+        if(isBarDown) {
+          isBarDown = false;
+          startAutoplay();
+        }
+      });
+
+      // --- 4. Sync Visuals ---
+      function updateProgress() {
+        const scrollWidth = track.scrollWidth - track.clientWidth;
+        const scrolled = track.scrollLeft;
+        
+        if (scrollWidth <= 0) {
+          progressFill.style.width = '100%';
+          return;
+        }
+
+        const viewRatio = track.clientWidth / track.scrollWidth;
+        const thumbWidthPercent = Math.max(viewRatio * 100, 10); 
+        const maxTranslate = 100 - thumbWidthPercent;
+        const progressPercent = (scrolled / scrollWidth) * maxTranslate;
+
+        progressFill.style.width = `${thumbWidthPercent}%`;
+        progressFill.style.left = `${progressPercent}%`;
+      }
+
+      track.addEventListener('scroll', updateProgress);
+      window.addEventListener('resize', updateProgress);
+      
+      // Init
+      updateProgress();
+      startAutoplay();
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.ai-carousel-container-{{ ai_gen_id }}').forEach(initCarousel);
+    });
+
+    document.addEventListener('shopify:section:load', (e) => {
+      const el = e.target.classList.contains('ai-carousel-container-{{ ai_gen_id }}') 
+        ? e.target 
+        : e.target.querySelector('.ai-carousel-container-{{ ai_gen_id }}');
+      if (el) initCarousel(el);
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Carousel (Optimized)",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section heading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Featured Collection"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Font",
+      "default": "oswald_n5"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Size",
+      "min": 20,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "select",
+      "id": "heading_text_transform",
+      "label": "Text transform",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "uppercase", "label": "Uppercase" },
+        { "value": "lowercase", "label": "Lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Color",
+      "default": "#232322"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximum width",
+      "min": 800,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "items_per_row_desktop",
+      "label": "Items per row on desktop",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "items_per_row_mobile",
+      "label": "Items per row on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Gap between items",
+      "min": 0,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Autoplay"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay_enabled",
+      "label": "Enable auto-sliding",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_interval",
+      "label": "Autoplay interval (seconds)",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Item style"
+    },
+    {
+      "type": "range",
+      "id": "content_padding",
+      "label": "Content padding top",
+      "min": 0,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "range",
+      "id": "image_aspect_ratio",
+      "label": "Image aspect ratio",
+      "min": 50,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "image_border_radius",
+      "label": "Image border radius",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Title"
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Font",
+      "default": "oswald_n5"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Size",
+      "min": 14,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Color",
+      "default": "#232322"
+    },
+    {
+      "type": "header",
+      "content": "Description"
+    },
+    {
+      "type": "font_picker",
+      "id": "description_font",
+      "label": "Font",
+      "default": "rubik_n4"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "label": "Size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Color",
+      "default": "#454544"
+    },
+    {
+      "type": "header",
+      "content": "Progress bar"
+    },
+    {
+      "type": "range",
+      "id": "progress_width",
+      "label": "Bar max width (px)",
+      "min": 100,
+      "max": 600,
+      "step": 50,
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "progress_height",
+      "label": "Height",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "progress_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "progress_background_color",
+      "label": "Background",
+      "default": "#EBEBEB"
+    },
+    {
+      "type": "color",
+      "id": "progress_fill_color",
+      "label": "Fill color",
+      "default": "#c84b00"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Slide Title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Short description for this item."
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Carousel (Optimized)",
+      "blocks": [
+        { "type": "slide" },
+        { "type": "slide" },
+        { "type": "slide" }
+      ]
+    }
+  ]
+}
+{% endschema %}

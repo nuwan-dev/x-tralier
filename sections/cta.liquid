@@ -1,0 +1,523 @@
+{% comment %}
+  Image + Content Split Section (matches screenshot)
+  - Center title on top
+  - Big rounded card with image left, content right
+  - Responsive: stacks on mobile (image on top)
+  - Fully customizable via section settings (controllers)
+{% endcomment %}
+
+{%- assign uid = section.id | replace: '-', '' | downcase -%}
+
+{% style %}
+  .ta-{{ uid }}{
+    padding: {{ section.settings.section_padding_y }}px {{ section.settings.section_padding_x }}px;
+    background: {{ section.settings.section_bg }};
+  }
+
+  .ta-wrap-{{ uid }}{
+    max-width: {{ section.settings.max_width }}px;
+    margin: 0 auto;
+  }
+
+  .ta-title-{{ uid }}{
+    text-align: center;
+    margin: 0 0 {{ section.settings.title_gap }}px;
+    font-size: {{ section.settings.title_size }}px;
+    color: {{ section.settings.title_color }};
+    font-weight: {{ section.settings.title_weight }};
+    line-height: 1.15;
+  }
+
+  .ta-card-{{ uid }}{
+    background: {{ section.settings.card_bg }};
+    border-radius: {{ section.settings.card_radius }}px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1.12fr 1fr;
+    min-height: {{ section.settings.card_min_height }}px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.04);
+  }
+
+  .ta-media-{{ uid }}{
+    position: relative;
+    background: {{ section.settings.media_bg }};
+    overflow: hidden;
+  }
+
+  .ta-media-{{ uid }} .ta-img-wrap-{{ uid }}{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: {{ section.settings.media_min_height }}px;
+  }
+
+  .ta-media-{{ uid }} img{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: {{ section.settings.image_fit }};
+    object-position: center;
+    border-radius: 0; /* card handles rounding */
+  }
+
+  .ta-content-{{ uid }}{
+    padding: {{ section.settings.content_padding_y }}px {{ section.settings.content_padding_x }}px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .ta-heading-{{ uid }}{
+    margin: 0 0 {{ section.settings.heading_gap }}px;
+    font-size: {{ section.settings.heading_size }}px;
+    color: {{ section.settings.heading_color }};
+    font-weight: {{ section.settings.heading_weight }};
+    line-height: 1.2;
+  }
+
+  .ta-text-{{ uid }}{
+    margin: 0 0 {{ section.settings.text_gap }}px;
+    font-size: {{ section.settings.text_size }}px;
+    color: {{ section.settings.text_color }};
+    line-height: 1.6;
+  }
+
+  .ta-text-{{ uid }} p{ margin: 0 0 12px; }
+  .ta-text-{{ uid }} p:last-child{ margin-bottom: 0; }
+
+  .ta-btn-{{ uid }}{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    padding: {{ section.settings.button_py }}px {{ section.settings.button_px }}px;
+    border-radius: {{ section.settings.button_radius }}px;
+    background: {{ section.settings.button_bg }};
+    color: {{ section.settings.button_color }};
+    text-decoration: none;
+    font-size: {{ section.settings.button_size }}px;
+    font-weight: {{ section.settings.button_weight }};
+    line-height: 1;
+    border: 1px solid rgba(0,0,0,0);
+    transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+  }
+
+  .ta-btn-{{ uid }}:hover{
+    filter: brightness(0.95);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.10);
+  }
+  .ta-btn-{{ uid }}:active{
+    transform: translateY(1px);
+  }
+
+  /* Responsive */
+  @media (max-width: 989px){
+    .ta-card-{{ uid }}{
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+    .ta-media-{{ uid }} .ta-img-wrap-{{ uid }}{
+      min-height: {{ section.settings.media_min_height_mobile }}px;
+    }
+    .ta-content-{{ uid }}{
+      padding: {{ section.settings.content_padding_y_mobile }}px {{ section.settings.content_padding_x_mobile }}px;
+    }
+    .ta-title-{{ uid }}{
+      font-size: calc({{ section.settings.title_size }}px * 0.85);
+    }
+    .ta-heading-{{ uid }}{
+      font-size: calc({{ section.settings.heading_size }}px * 0.85);
+    }
+  }
+
+  @media (max-width: 749px){
+    .ta-{{ uid }}{
+      padding: calc({{ section.settings.section_padding_y }}px * 0.75) calc({{ section.settings.section_padding_x }}px * 0.75);
+    }
+    .ta-btn-{{ uid }}{
+      width: 100%;
+      justify-content: center;
+    }
+  }
+{% endstyle %}
+
+<section class="ta-{{ uid }}" {{ section.shopify_attributes }}>
+  <div class="ta-wrap-{{ uid }}">
+    {%- if section.settings.top_title != blank -%}
+      <h2 class="ta-title-{{ uid }}">{{ section.settings.top_title }}</h2>
+    {%- endif -%}
+
+    <div class="ta-card-{{ uid }}">
+      <div class="ta-media-{{ uid }}">
+        <div class="ta-img-wrap-{{ uid }}">
+          {%- if section.settings.image != blank -%}
+            <img
+              src="{{ section.settings.image | image_url: width: 1600 }}"
+              alt="{{ section.settings.image.alt | escape }}"
+              loading="lazy"
+              width="1600"
+              height="{{ 1600 | divided_by: 1.777 | round }}"
+            >
+          {%- else -%}
+            {{ 'image' | placeholder_svg_tag }}
+          {%- endif -%}
+        </div>
+      </div>
+
+      <div class="ta-content-{{ uid }}">
+        {%- if section.settings.heading != blank -%}
+          <h3 class="ta-heading-{{ uid }}">{{ section.settings.heading }}</h3>
+        {%- endif -%}
+
+        {%- if section.settings.text != blank -%}
+          <div class="ta-text-{{ uid }}">{{ section.settings.text }}</div>
+        {%- endif -%}
+
+        {%- if section.settings.button_label != blank -%}
+          <a class="ta-btn-{{ uid }}" href="{{ section.settings.button_link | default: '#' }}">
+            {{ section.settings.button_label }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "cta",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "header", "content": "Content" },
+    {
+      "type": "inline_richtext",
+      "id": "top_title",
+      "label": "Top title (centered)",
+      "default": "Tandem Axle Trailers"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Card heading",
+      "default": "Built for Real New Zealand Work , Trailers That Perform Where It Matters"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Description",
+      "default": "<p>Designed for heavier loads and improved stability, our tandem axle trailers are built for demanding jobs across farms, worksites, and commercial operations.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "View Tandem Axle Range"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Left image"
+    },
+
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Max width (px)",
+      "min": 900,
+      "max": 1800,
+      "step": 50,
+      "default": 1600
+    },
+    {
+      "type": "range",
+      "id": "card_min_height",
+      "label": "Card minimum height (desktop px)",
+      "min": 320,
+      "max": 700,
+      "step": 10,
+      "default": 520
+    },
+    {
+      "type": "range",
+      "id": "media_min_height",
+      "label": "Image area minimum height (desktop px)",
+      "min": 260,
+      "max": 700,
+      "step": 10,
+      "default": 520
+    },
+    {
+      "type": "range",
+      "id": "media_min_height_mobile",
+      "label": "Image area minimum height (mobile px)",
+      "min": 180,
+      "max": 520,
+      "step": 10,
+      "default": 280
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Image fit",
+      "options": [
+        { "value": "cover", "label": "Cover (crop to fill)" },
+        { "value": "contain", "label": "Contain (show full image)" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "label": "Card corner radius (px)",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 14
+    },
+
+    { "type": "header", "content": "Spacing" },
+    {
+      "type": "range",
+      "id": "section_padding_y",
+      "label": "Section padding (top/bottom px)",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "section_padding_x",
+      "label": "Section padding (left/right px)",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "content_padding_y",
+      "label": "Content padding Y (desktop px)",
+      "min": 16,
+      "max": 90,
+      "step": 2,
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "content_padding_x",
+      "label": "Content padding X (desktop px)",
+      "min": 16,
+      "max": 90,
+      "step": 2,
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "content_padding_y_mobile",
+      "label": "Content padding Y (mobile px)",
+      "min": 12,
+      "max": 60,
+      "step": 2,
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "content_padding_x_mobile",
+      "label": "Content padding X (mobile px)",
+      "min": 12,
+      "max": 60,
+      "step": 2,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "title_gap",
+      "label": "Gap under top title (px)",
+      "min": 10,
+      "max": 80,
+      "step": 2,
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "heading_gap",
+      "label": "Gap under card heading (px)",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "text_gap",
+      "label": "Gap under description (px)",
+      "min": 8,
+      "max": 50,
+      "step": 2,
+      "default": 36
+    },
+
+    { "type": "header", "content": "Colors" },
+    {
+      "type": "color",
+      "id": "section_bg",
+      "label": "Section background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Card background",
+      "default": "#f3f3f3"
+    },
+    {
+      "type": "color",
+      "id": "media_bg",
+      "label": "Image background",
+      "default": "#e9e9e9"
+    },
+
+    { "type": "header", "content": "Top title style" },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Top title size (px)",
+      "min": 18,
+      "max": 64,
+      "step": 2,
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "title_weight",
+      "label": "Top title weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Top title color",
+      "default": "#111111"
+    },
+
+    { "type": "header", "content": "Card heading style" },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "label": "Card heading size (px)",
+      "min": 18,
+      "max": 56,
+      "step": 2,
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "heading_weight",
+      "label": "Card heading weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 700
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Card heading color",
+      "default": "#111111"
+    },
+
+    { "type": "header", "content": "Body text style" },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Body text size (px)",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body text color",
+      "default": "#2b2b2b"
+    },
+
+    { "type": "header", "content": "Button style" },
+    {
+      "type": "range",
+      "id": "button_size",
+      "label": "Button font size (px)",
+      "min": 12,
+      "max": 22,
+      "step": 1,
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_weight",
+      "label": "Button font weight",
+      "min": 300,
+      "max": 900,
+      "step": 100,
+      "default": 500
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Button background",
+      "default": "#f5a623"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button text color",
+      "default": "#111111"
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "label": "Button radius (px)",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "button_py",
+      "label": "Button padding Y (px)",
+      "min": 8,
+      "max": 22,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "button_px",
+      "label": "Button padding X (px)",
+      "min": 14,
+      "max": 40,
+      "step": 1,
+      "default": 22
+    }
+  ],
+  "presets": [
+    {
+      "name": "Split image + content card"
+    }
+  ]
+}
+{% endschema %}
